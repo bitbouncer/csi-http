@@ -38,13 +38,11 @@ namespace csi
                 return _avro_rx_buffer->byteCount();
             }
 
-            csi::http::method_t method() const { return _method; }
-
+            inline csi::http::method_t method() const               { return _method; }
             inline std::auto_ptr<avro::InputStream> content() const { return avro::memoryInputStream(*_avro_rx_buffer); }
             inline const std::vector<header>&			  headers() const { return _headers; }
-
-            const std::string& url() const          { return _url; }
-            const std::string& query() const			  { return _query; }
+            inline const std::string& url() const                   { return _url; }
+            inline const std::string& query() const	                { return _query; }
 
             csi::http::method_t                _method;
             std::string                        _url;

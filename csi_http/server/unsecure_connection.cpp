@@ -49,9 +49,6 @@ namespace csi
 
         void unsecure_connection::start()
         {
-            // fill in authentication fields in unsecure_connection
-            _auth._is_authenticated = false;
-            _auth._remote_endpoint = _socket.remote_endpoint();
             _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&unsecure_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
         }
 

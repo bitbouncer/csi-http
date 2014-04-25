@@ -47,16 +47,12 @@ namespace csi
             void handle_accept(const boost::system::error_code& e);
 
             /// The pool of io_service objects used to perform asynchronous operations.
-            io_service_pool& io_service_pool_;
-
+            io_service_pool&                _io_service_pool;
             /// Acceptor used to listen for incoming connections.
-            boost::asio::ip::tcp::acceptor acceptor_;
-
+            boost::asio::ip::tcp::acceptor  _acceptor;
             /// The next connection to be accepted.
-            connection_ptr new_connection_;
-
-            std::string _request_id_header;
+            connection_ptr                  _new_connection;
+            std::string                     _request_id_header;
         };
-
     } // namespace http_server
 } // namespace csi

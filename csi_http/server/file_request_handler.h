@@ -18,19 +18,13 @@ namespace csi
     namespace http_server
     {
         class connection;
-
         class file_request_handler : public request_handler
         {
         public:
-            /// Construct with a directory containing files to be served.
             file_request_handler(const boost::filesystem::path& http_root);
-
-            /// Handle a request and produce a reply.
             virtual void handle_request(const std::string& rel_url, csi::http_server::connection*);
         private:
-            /// The directory containing the files to be served.
             boost::filesystem::path			_http_root;
         };
-
     } // namespace server
 } // namespace http

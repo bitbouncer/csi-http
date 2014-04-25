@@ -14,6 +14,8 @@
 namespace csi
 {
     /*
+    I might have mistaken what avro::jsonEncoder is - leaving the code here until I figured out wether this in another encoding or not.
+
     template<class T>
     void avro_json_encode(const T& src, avro::OutputStream& dst)
     {

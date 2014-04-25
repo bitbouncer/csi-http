@@ -21,21 +21,9 @@ namespace csi
 {
     namespace http_server
     {
-        class authentication
-        {
-        public:
-            authentication() : _is_authenticated(false) {}
-            boost::asio::ip::tcp::endpoint  _remote_endpoint;
-            bool		                        _is_authenticated;
-            //uint32_t                        cuid;
-            //uint32_t                        ipv4host;
-            //public_key;
-            //fingerprint
-        };
-
         class connection : private boost::noncopyable
         {
-            enum { MAX_HEADER_SIZE = 4096, MAX_URL = 256 };
+            enum { MAX_HEADER_SIZE = 4096 };
 
         public:
             connection(boost::asio::io_service& ios, const std::string& request_id_header); // server agent
@@ -50,7 +38,7 @@ namespace csi
             inline bool             waiting_for_reply() const   { return _waiting_for_async_reply; }
             size_t                  http_parse(const char* at, size_t len);
             static void             init_parser_settings(http_parser_settings* ps);
-            static size_t           connection_count() { return s_context_count; }
+            inline static size_t    connection_count() { return s_context_count; }
         protected:
             virtual void send_reply() = 0;
             inline bool	 request_complete() const		 { return _request_complete; }
@@ -80,7 +68,6 @@ namespace csi
             bool									    _keep_alive;
             mutable std::string       _request_id; /* assigned a uuid if needed and none was given in the request */
             bool                      _waiting_for_async_reply;
-            
             static csi::spinlock      s_spinlock;
             static size_t             s_context_count;
         };

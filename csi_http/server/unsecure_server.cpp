@@ -18,57 +18,57 @@ namespace csi
     namespace http_server
     {
         unsecure_server::unsecure_server(const std::string& address, int port, io_service_pool* pool, const std::string& request_id_header)
-            : io_service_pool_(*pool),
+            : _io_service_pool(*pool),
             _request_id_header(request_id_header),
-            acceptor_(io_service_pool_.get_io_service())
+            _acceptor(_io_service_pool.get_io_service())
         {
             // Open the acceptor with the option to reuse the address (i.e. SO_REUSEADDR).
-            boost::asio::ip::tcp::resolver resolver(io_service_pool_.get_io_service());
+            boost::asio::ip::tcp::resolver resolver(_io_service_pool.get_io_service());
 
             char port_string[32];
             sprintf(port_string, "%d", (int)port);
 
             boost::asio::ip::tcp::resolver::query query(address, port_string);
             boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(query);
-            acceptor_.open(endpoint.protocol());
-            acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-            acceptor_.bind(endpoint);
-            acceptor_.listen();
-            new_connection_.reset(new unsecure_connection(io_service_pool_.get_io_service(), this, _request_id_header));
-            acceptor_.async_accept(new_connection_->socket(), boost::bind(&unsecure_server::handle_accept, this, boost::asio::placeholders::error));
+            _acceptor.open(endpoint.protocol());
+            _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+            _acceptor.bind(endpoint);
+            _acceptor.listen();
+            _new_connection.reset(new unsecure_connection(_io_service_pool.get_io_service(), this, _request_id_header));
+            _acceptor.async_accept(_new_connection->socket(), boost::bind(&unsecure_server::handle_accept, this, boost::asio::placeholders::error));
         }
 
         unsecure_server::unsecure_server(int port, io_service_pool* pool, const std::string& request_id_header)
-            : io_service_pool_(*pool),
+            : _io_service_pool(*pool),
             _request_id_header(request_id_header),
-            acceptor_(io_service_pool_.get_io_service())
+            _acceptor(_io_service_pool.get_io_service())
         {
             boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address_v4::any(), port);
-            acceptor_.open(endpoint.protocol());
-            acceptor_.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
-            acceptor_.bind(endpoint);
-            acceptor_.listen();
-            new_connection_.reset(new unsecure_connection(io_service_pool_.get_io_service(), this, _request_id_header));
-            acceptor_.async_accept(new_connection_->socket(), boost::bind(&unsecure_server::handle_accept, this, boost::asio::placeholders::error));
+            _acceptor.open(endpoint.protocol());
+            _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
+            _acceptor.bind(endpoint);
+            _acceptor.listen();
+            _new_connection.reset(new unsecure_connection(_io_service_pool.get_io_service(), this, _request_id_header));
+            _acceptor.async_accept(_new_connection->socket(), boost::bind(&unsecure_server::handle_accept, this, boost::asio::placeholders::error));
         }
 
         void unsecure_server::run()
         {
-            io_service_pool_.run();
+            _io_service_pool.run();
         }
 
         void unsecure_server::stop()
         {
-            io_service_pool_.stop();
+            _io_service_pool.stop();
         }
 
         void unsecure_server::handle_accept(const boost::system::error_code& e)
         {
             if (!e)
             {
-                new_connection_->start();
-                new_connection_.reset(new unsecure_connection(io_service_pool_.get_io_service(), this, _request_id_header));
-                acceptor_.async_accept(new_connection_->socket(), boost::bind(&unsecure_server::handle_accept, this, boost::asio::placeholders::error));
+                _new_connection->start();
+                _new_connection.reset(new unsecure_connection(_io_service_pool.get_io_service(), this, _request_id_header));
+                _acceptor.async_accept(_new_connection->socket(), boost::bind(&unsecure_server::handle_accept, this, boost::asio::placeholders::error));
             }
             else
             {

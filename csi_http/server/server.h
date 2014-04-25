@@ -24,7 +24,6 @@ namespace csi
         {
         protected:
             server();
-
         public:
             void add_request_handler(const std::string& vpath, request_handler* p);
             void handle_request(csi::http_server::connection*);

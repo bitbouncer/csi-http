@@ -63,18 +63,10 @@ namespace csi
             boost::asio::ip::tcp::socket _socket;
             unsecure_server*			       _server;
             boost::asio::deadline_timer  _connection_timeout_timer;
-            authentication				       _auth;
         };
         typedef boost::shared_ptr<unsecure_connection> connection_ptr;
     } // namespace server
 } // namespace csi
-
-inline std::string remote_id_to_string(const csi::http_server::authentication& auth)
-{
-    if (auth._is_authenticated)
-        return std::string("SHOULD_BE_CERT_MD5 or DN?");
-    return "none";
-}
 
 inline std::string to_string(const boost::asio::ip::tcp::endpoint& ep)
 {

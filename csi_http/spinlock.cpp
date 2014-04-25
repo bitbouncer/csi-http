@@ -1,5 +1,5 @@
 //
-// server.cpp
+// spinlock.cpp
 // ~~~~~~~~~
 // Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
 //
