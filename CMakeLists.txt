@@ -1,16 +1,18 @@
 cmake_minimum_required(VERSION 2.8)
 
-SET(OPENSSLPATH			${CMAKE_SOURCE_DIR}/../openssl-1.0.1g)
+
 SET(BOOST_PATH 		  	${CMAKE_SOURCE_DIR}/../boost_1_55_0)
-SET(LIBCURL_PATH 	        ${CMAKE_SOURCE_DIR}/../curl-7.35.0)
 SET(AVROCPP_PATH 	        ${CMAKE_SOURCE_DIR}/../avro-cpp-1.7.6)
 
+if(WIN32)
+SET(OPENSSLPATH			${CMAKE_SOURCE_DIR}/../openssl-1.0.1g)
+SET(LIBCURL_PATH 	        ${CMAKE_SOURCE_DIR}/../curl-7.35.0)
+endif()
 
 SET(LIBRARY_OUTPUT_PATH     ${CMAKE_SOURCE_DIR}/lib)
 SET(EXECUTABLE_OUTPUT_PATH  ${CMAKE_SOURCE_DIR}/bin)
 
 add_definitions(-D_FILE_OFFSET_BITS=64 -D_REENTRANT -D EXTERNAL_LOCKS -DMULTITHREAD)
-add_definitions(-DCURL_STATICLIB)
 add_definitions(-DBOOST_ASIO_HAS_STD_CHRONO)
 
 include_directories (
@@ -20,6 +22,7 @@ include_directories (
 	${AVROCPP_PATH})
 
 if(WIN32)
+add_definitions(-DCURL_STATICLIB)
 ADD_LIBRARY(ZLIB STATIC IMPORTED)
 SET_TARGET_PROPERTIES(ZLIB PROPERTIES IMPORTED_LOCATION ${ZLIB_PATH}/lib/zdll.lib)
 
@@ -59,8 +62,8 @@ add_definitions(-std=c++11)
 add_definitions(-DBOOST_LOG_DYN_LINK)
 #add_definitions(-DBOOST_ASIO_HAS_STD_CHRONO_MONOTONIC_CLOCK)
 add_definitions(-Wno-deprecated)
-set(AVROCPP_LIB_PATH 	${AVROCPP_PATH}/lib)
-link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${CURL_LIB_PATH} ${AVROCPP_LIB_PATH})
+set(AVROCPP_LIB_PATH ${AVROCPP_PATH}/lib)
+link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${AVROCPP_LIB_PATH})
 set(EXT_LIBS avrocpp boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_program_options boost_filesystem boost_regex boost_chrono boost_locale libcurl rt pthread c)
 endif()
 
