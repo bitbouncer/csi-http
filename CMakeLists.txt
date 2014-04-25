@@ -64,7 +64,7 @@ add_definitions(-DBOOST_LOG_DYN_LINK)
 add_definitions(-Wno-deprecated)
 set(AVROCPP_LIB_PATH ${AVROCPP_PATH}/build)
 link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${AVROCPP_LIB_PATH})
-set(EXT_LIBS avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_program_options boost_filesystem boost_regex boost_chrono boost_locale curl rt pthread c)
+set(EXT_LIBS csi-http avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_program_options boost_filesystem boost_regex boost_chrono boost_locale curl rt pthread c)
 endif()
 
 if(__DARWIN__)
@@ -79,7 +79,7 @@ add_definitions(-std=c++11)
 add_definitions(-DBOOST_LOG_DYN_LINK)
 include_directories(/opt/X11/include)
 link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${CURL_LIB_PATH} ${AVROCPP_LIB_PATH})
-set(EXT_LIBS boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_filesystem boost_locale LIBCURL LIBCRYPTOPP stdc++ pthread c)
+set(EXT_LIBS csi-http avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_filesystem boost_locale LIBCURL LIBCRYPTOPP stdc++ pthread c)
 endif()
 
 
