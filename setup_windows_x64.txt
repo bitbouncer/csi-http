@@ -36,9 +36,6 @@ unzip curl-%CURL_VERSION%.zip
 
 git clone https://github.com/bitbouncer/csi-http
 
-wget https://github.com/bitbouncer/csi-http/archive/master.zip
-unzip master.zip
-
 
 @ECHO BUILDING OPENSSL
 cd %OPEN_SSL_VERSION%
