@@ -1,0 +1,126 @@
+REM Get yourself some gnutools. You will need wget, perl, unzip and tar
+REM You will aslo need visual studio 2013 
+
+REM curl 7.36 will not build on windows in dll version
+
+
+mkdir source
+cd source
+
+
+set VISUALSTUDIO_VERSION=12.0
+set BOOST_VERSION=1_55_0
+set BOOST_VERSION_DOTTED=1.55.0
+set OPEN_SSL_VERSION=openssl-1.0.1g
+set CURL_VERSION=7.35.0
+set AVRO_VERSION=1.7.6
+set ZLIB_VERSION=1.2.8
+
+call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
+
+call wget ftp://ftp.sunet.se/pub/www/servers/apache/dist/avro/avro-1.7.6/cpp/avro-cpp-%AVRO_VERSION%.tar.gz
+call tar xvf avro-cpp-%AVRO_VERSION%.tar.gz
+
+wget http://zlib.net/zlib-%ZLIB_VERSION%.tar.gz
+tar xvf zlib-%ZLIB_VERSION%.tar.gz
+
+wget http://sourceforge.net/projects/boost/files/boost/%BOOST_VERSION_DOTTED%/boost_%BOOST_VERSION%.zip/download -Oboost_%BOOST_VERSION%.zip
+unzip boost_%BOOST_VERSION%.zip
+
+wget  http://www.openssl.org/source/%OPEN_SSL_VERSION%.tar.gz 
+gzip -d %OPEN_SSL_VERSION%.tar.gz
+tar -xvf %OPEN_SSL_VERSION%.tar
+
+wget http://curl.haxx.se/download/curl-%CURL_VERSION%.zip
+unzip curl-%CURL_VERSION%.zip
+
+git clone https://github.com/bitbouncer/csi-http
+
+wget https://github.com/bitbouncer/csi-http/archive/master.zip
+unzip master.zip
+
+
+@ECHO BUILDING OPENSSL
+cd %OPEN_SSL_VERSION%
+perl Configure VC-WIN64A --prefix=/OpenSSL-Win64
+ms\do_win64a
+nmake -f ms\nt.mak
+nmake -f ms\ntdll.mak
+cd ..
+@ECHO DONE WITH OPENSSL
+
+
+@ECHO BUILDING LIBCURL
+cd curl-%CURL_VERSION%
+rmdir /s /q builds
+rmdir /s /q libs
+mkdir libs
+mkdir libs\x64
+mkdir libs\x64\Debug
+mkdir libs\x64\Release
+mkdir libs\win32
+mkdir libs\win32\Debug
+mkdir libs\win32\Release
+cd winbuild
+SET INCLUDE=%INCLUDE%;..\..\%OPEN_SSL_VERSION%\include;..\include;..\..\%OPEN_SSL_VERSION%\include\openssl
+nmake /f makefile.vc mode=dll VC=12 WITH_SSL=yes ENABLE_SSPI=no ENABLE_WINSSL=no ENABLE_IDN=no DEBUG=yes MACHINE=x64
+nmake /f makefile.vc mode=dll VC=12 WITH_SSL=yes ENABLE_SSPI=no ENABLE_WINSSL=no ENABLE_IDN=no DEBUG=no MACHINE=x64
+cd ..
+copy builds\libcurl-vc12-x64-debug-dll-ipv6-spnego\lib\libcurl_debug.lib libs\x64\Debug\libcurl.lib 
+copy builds\libcurl-vc12-x64-release-dll-ipv6-spnego\lib\libcurl.lib libs\x64\Release\libcurl.lib 
+copy builds\libcurl-vc12-x64-debug-dll-ipv6-spnego\bin\libcurl_debug.dll libs\x64\Debug\libcurl_debug.dll 
+copy builds\libcurl-vc12-x64-release-dll-ipv6-spnego\bin\libcurl.dll libs\x64\Release\libcurl.dll 
+cd ..
+@ECHO DONE WITH CURL
+
+
+@ECHO BUILDING BOOST
+cd boost_%BOOST_VERSION%
+rmdir /s /q bin.v2
+rmdir /s /q bin.v2
+call bootstrap.bat
+b2 -j 4 -toolset=msvc-12.0 address-model=64 --build-type=complete --stagedir=lib\x64 stage -s ZLIB_SOURCE=%CD%\..\zlib-%ZLIB_VERSION%
+rmdir /s /q bin.v2
+cd ..
+@ECHO DONE WITH BOOST
+
+
+
+@ECHO BUILDING AVRO
+REM this is a ugly patch because I havn't figured out how to the original Cmakefile find boost...
+copy csi-http\patches\avro\CMakeLists.txt avro-cpp-%AVRO_VERSION%
+
+cd avro-cpp-%AVRO_VERSION%
+rmdir /S /Q avro
+rmdir /S /Q bin
+rmdir /S /Q lib
+rmdir /S /Q win_build32
+rmdir /S /Q win_build64
+mkdir win_build64 
+cd win_build64
+del CMakeCache.txt
+cmake -G "Visual Studio 12 Win64" ..
+devenv ALL_BUILD.vcxproj /Build "Debug|x64"
+devenv ALL_BUILD.vcxproj /Build "Release|x64"
+cd ..
+mkdir avro
+xcopy /e /s api\*.* avro
+cd ..
+
+
+
+cd csi-http
+git pull
+call build_windows.bat
+cd ..
+
+
+
+
+
+
+
+
+
+
+
