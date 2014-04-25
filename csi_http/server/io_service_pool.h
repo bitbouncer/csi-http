@@ -1,7 +1,7 @@
 //
-// io_service_pool.hpp
+// io_service_pool.h
 // ~~~~~~~~~~~~~~~~~~~
-//
+// Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
 // Copyright (c) 2003-2010 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying

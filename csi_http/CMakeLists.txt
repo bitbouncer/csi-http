@@ -17,9 +17,7 @@ SET(LIB_SRCS
 	server/reply.h
 	server/reply.cpp
 	server/request.h
-	server/request.cpp
 	server/request_handler.h
-	server/request_handler.cpp
 	server/server.h
 	server/server.cpp
 	server/unsecure_server.h

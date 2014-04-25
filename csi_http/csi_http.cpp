@@ -1,3 +1,12 @@
+//
+// csi_http.cpp
+// 
+// Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
+// 
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
 #include <boost/lexical_cast.hpp>
 #include "csi_http.h"
 
@@ -88,6 +97,3 @@ const std::string& to_string(csi::http::method_t e)
 {
     return 	method_strings[e];
 }
-
-//int csi::http_request_state::_count=0;
-

@@ -1,7 +1,7 @@
 //
 // unsecure_server.cpp
-// ~~~~~~~~~~
 //
+// Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
 // Copyright (c) 2003-2010 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -75,6 +75,5 @@ namespace csi
                 //LOG_WARNING() << "server::handle_accept failed with code:(" << e.message() << ") category: " << e.category().name();
             }
         }
-
     } // namespace server
-} // namespace http
+} // namespace csi

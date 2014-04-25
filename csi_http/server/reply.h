@@ -1,23 +1,20 @@
 //
-// reply.hpp
+// reply.h
 // ~~~~~~~~~
-//
+// Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
 // Copyright (c) 2003-2010 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef HTTP_server_REPLY_HPP
-#define HTTP_server_REPLY_HPP
-
+#pragma once
 #include <string>
 #include <vector>
 #include <boost/asio.hpp>
 #include <boost/utility.hpp>
-
-#include "header.h"
 #include <csi_http/csi_http.h>
+#include "header.h"
 
 namespace csi
 {
@@ -77,8 +74,5 @@ namespace csi
         private:
             status_type _status;
         };
-
     } // namespace server
-} // namespace http
-
-#endif // HTTP_server_REPLY_HPP
+} // namespace csi

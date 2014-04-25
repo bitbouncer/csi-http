@@ -1,3 +1,12 @@
+//
+// http_client.cpp
+// 
+// Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
+// 
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
 #include <chrono>
 #include <future>
 #include <boost/asio.hpp>
@@ -5,15 +14,9 @@
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
-
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition_variable.hpp>
-
-
 #include "http_client.h"
-
-
-
 
 namespace csi
 {

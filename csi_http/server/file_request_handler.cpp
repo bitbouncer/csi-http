@@ -1,7 +1,7 @@
 //
 // file_request_handler.cpp
 // ~~~~~~~~~~~~~~~~~~~
-//
+// Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
 // Copyright (c) 2003-2010 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -17,7 +17,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 
-#include "request_handler.h"
+#include "file_request_handler.h"
 #include "reply.h"
 
 namespace csi

@@ -1,9 +1,19 @@
+//
+// spinlock.h
+// ~~~~~~~~~~~~~~~~~~~
+//
+// Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
+//
+// this is just a "public" version of the internal spinlock that's in the shared_ptr implementation
+// http://boost.2283326.n4.nabble.com/shared-ptr-thread-spinlock-initialization-td4636282.html
+//
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
 #pragma once
 
-/*
-* this is just a "public" version of the internal spinlock that's in the shared_ptr implementation
-* http://boost.2283326.n4.nabble.com/shared-ptr-thread-spinlock-initialization-td4636282.html
-*/
 #include <boost/noncopyable.hpp>
 #include <boost/smart_ptr/detail/spinlock.hpp>
 

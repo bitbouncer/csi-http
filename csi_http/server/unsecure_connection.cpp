@@ -1,3 +1,13 @@
+//
+// unsecure_connection.cpp
+// 
+// Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
+// based on work by Christopher M. Kohlhoff (chris at kohlhoff dot com) same copyright as this work
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
 #include <vector>
 #include <chrono>
 #include <boost/bind.hpp>
@@ -17,23 +27,6 @@ namespace csi
 {
     namespace http_server
     {
-        //static
-        /*
-        int unsecure_connection::_count = 0;
-
-        void unsecure_connection::incr_count()
-        {
-            csi::spinlock::scoped_lock xx(_spinlock);
-            _count++; 
-        }
-
-        void unsecure_connection::decr_count()
-        {
-            csi::spinlock::scoped_lock xx(_spinlock);
-            _count--;
-        }
-        */
-
         unsecure_connection::unsecure_connection(boost::asio::io_service& io_service, unsecure_server* server, const std::string& request_id_header) :
             connection(io_service, request_id_header),
             _socket(io_service),

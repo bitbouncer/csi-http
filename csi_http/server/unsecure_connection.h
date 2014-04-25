@@ -1,14 +1,14 @@
 //
-// connection.hpp
+// connection.h
 // ~~~~~~~~~~~~~~
 //
+// Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
 // Copyright (c) 2003-2010 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 #pragma once
-
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
@@ -64,17 +64,10 @@ namespace csi
             unsecure_server*			       _server;
             boost::asio::deadline_timer  _connection_timeout_timer;
             authentication				       _auth;
-
-            /*
-            void incr_count();
-            void decr_count();
-
-            static int _count;
-            */
         };
         typedef boost::shared_ptr<unsecure_connection> connection_ptr;
     } // namespace server
-} // namespace http
+} // namespace csi
 
 inline std::string remote_id_to_string(const csi::http_server::authentication& auth)
 {
