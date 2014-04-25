@@ -1,5 +1,5 @@
 //
-// csi_http.h
+// avro_encoding.h
 // 
 // Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
 // 
@@ -13,6 +13,7 @@
 
 namespace csi
 {
+    /*
     template<class T>
     void avro_json_encode(const T& src, avro::OutputStream& dst)
     {
@@ -32,6 +33,7 @@ namespace csi
         avro::decode(*e, dst);
         return dst;
     }
+    */
 
     template<class T>
     void avro_binary_encode(const T& src, avro::OutputStream& dst)
