@@ -1,0 +1,11 @@
+{
+  "type" : "record",
+  "name" : "HelloWorldResponse",
+  "namespace" : "se.csi.sample",
+  "fields" : [ {
+    "name" : "message",
+    "type" : "string",
+    "doc"  : "message to client"
+  } ],
+  "doc:" : "A basic schema for HelloWorld service"
+}

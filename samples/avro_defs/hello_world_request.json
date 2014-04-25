@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "HelloWorldRequest",
+  "namespace" : "se.csi.sample",
+  "fields" : [ {
+    "name" : "message",
+    "type" : "string",
+    "doc"  : "message to server"
+  }, {
+    "name" : "delay",
+    "type" : "long",
+    "doc"  : "The time in ms to delay before response"
+  } ],
+  "doc:" : "A basic schema for HelloWorld service"
+}
