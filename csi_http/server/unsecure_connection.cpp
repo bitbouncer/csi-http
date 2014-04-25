@@ -99,7 +99,7 @@ namespace csi
 
                 if (bad_parse)
                 {
-                    _reply.create(reply_t::bad_request);
+                    _reply.create(csi::http::bad_request);
                     send_reply();
                     //LOG_WARNING() << "handle_read failed to parse http request";
                     return;

@@ -8,9 +8,9 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include "reply.h"
 #include <string>
 #include <boost/lexical_cast.hpp>
+#include "reply.h"
 
 namespace csi {
     namespace http_server {
@@ -57,43 +57,43 @@ namespace csi {
             const std::string service_unavailable =
                 "503 Service Unavailable\r\n";
 
-            boost::asio::const_buffer to_buffer(reply_t::status_type status)
+            boost::asio::const_buffer to_buffer(csi::http::status_type status)
             {
                 switch (status)
                 {
-                case reply_t::ok:
+                case csi::http::ok:
                     return boost::asio::buffer(ok);
-                case reply_t::created:
+                case csi::http::created:
                     return boost::asio::buffer(created);
-                case reply_t::accepted:
+                case csi::http::accepted:
                     return boost::asio::buffer(accepted);
-                case reply_t::no_content:
+                case csi::http::no_content:
                     return boost::asio::buffer(no_content);
-                case reply_t::multiple_choices:
+                case csi::http::multiple_choices:
                     return boost::asio::buffer(multiple_choices);
-                case reply_t::moved_permanently:
+                case csi::http::moved_permanently:
                     return boost::asio::buffer(moved_permanently);
-                case reply_t::moved_temporarily:
+                case csi::http::moved_temporarily:
                     return boost::asio::buffer(moved_temporarily);
-                case reply_t::not_modified:
+                case csi::http::not_modified:
                     return boost::asio::buffer(not_modified);
-                case reply_t::bad_request:
+                case csi::http::bad_request:
                     return boost::asio::buffer(bad_request);
-                case reply_t::unauthorized:
+                case csi::http::unauthorized:
                     return boost::asio::buffer(unauthorized);
-                case reply_t::forbidden:
+                case csi::http::forbidden:
                     return boost::asio::buffer(forbidden);
-                case reply_t::not_found:
+                case csi::http::not_found:
                     return boost::asio::buffer(not_found);
-                case reply_t::precondition_failed:
+                case csi::http::precondition_failed:
                     return boost::asio::buffer(precondition_failed);
-                case reply_t::internal_server_error:
+                case csi::http::internal_server_error:
                     return boost::asio::buffer(internal_server_error);
-                case reply_t::not_implemented:
+                case csi::http::not_implemented:
                     return boost::asio::buffer(not_implemented);
-                case reply_t::bad_gateway:
+                case csi::http::bad_gateway:
                     return boost::asio::buffer(bad_gateway);
-                case reply_t::service_unavailable:
+                case csi::http::service_unavailable:
                     return boost::asio::buffer(service_unavailable);
                 default:
                     return boost::asio::buffer(internal_server_error);
@@ -230,43 +230,43 @@ namespace csi {
                 "<body><h1>503 Service Unavailable</h1></body>"
                 "</html>";
 
-            std::string to_string(reply_t::status_type status)
+            std::string to_string(csi::http::status_type status)
             {
                 switch (status)
                 {
-                case reply_t::ok:
+                case csi::http::ok:
                     return ok;
-                case reply_t::created:
+                case csi::http::created:
                     return created;
-                case reply_t::accepted:
+                case csi::http::accepted:
                     return accepted;
-                case reply_t::no_content:
+                case csi::http::no_content:
                     return no_content;
-                case reply_t::multiple_choices:
+                case csi::http::multiple_choices:
                     return multiple_choices;
-                case reply_t::moved_permanently:
+                case csi::http::moved_permanently:
                     return moved_permanently;
-                case reply_t::moved_temporarily:
+                case csi::http::moved_temporarily:
                     return moved_temporarily;
-                case reply_t::not_modified:
+                case csi::http::not_modified:
                     return not_modified;
-                case reply_t::bad_request:
+                case csi::http::bad_request:
                     return bad_request;
-                case reply_t::unauthorized:
+                case csi::http::unauthorized:
                     return unauthorized;
-                case reply_t::forbidden:
+                case csi::http::forbidden:
                     return forbidden;
-                case reply_t::not_found:
+                case csi::http::not_found:
                     return not_found;
-                case reply_t::precondition_failed:
+                case csi::http::precondition_failed:
                     return precondition_failed;
-                case reply_t::internal_server_error:
+                case csi::http::internal_server_error:
                     return internal_server_error;
-                case reply_t::not_implemented:
+                case csi::http::not_implemented:
                     return not_implemented;
-                case reply_t::bad_gateway:
+                case csi::http::bad_gateway:
                     return bad_gateway;
-                case reply_t::service_unavailable:
+                case csi::http::service_unavailable:
                     return service_unavailable;
                 default:
                     return internal_server_error;
@@ -275,7 +275,7 @@ namespace csi {
 
         } // namespace stock_replies
 
-        void reply_t::create(status_type s, const std::string& content_type, size_t extra_headers)
+        void reply_t::create(csi::http::status_type s, const std::string& content_type, size_t extra_headers)
         {
             _status = s;
             // if we have not defined any content get a human readable string back
@@ -307,7 +307,5 @@ namespace csi {
             _avro_tx_buffer = avro::memoryOutputStream();
             _boost_tx_buffer.reset();
         }
-
-
-    } // namespace server
-} // namespace http
+    } // namespace http_server
+} // namespace csi

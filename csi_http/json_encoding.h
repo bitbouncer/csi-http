@@ -1,5 +1,5 @@
 //
-// csi_http.h
+// json_encoding.h
 // 
 // Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
 // 
@@ -65,39 +65,4 @@ namespace csi
     {
         return json_spirit_decode<T>(*src, dst);
     }
-
-    /*
-    template<class T>
-    bool json_spirit_decode(std::auto_ptr<avro::InputStream>& src, T& dst)
-    {
-        dst = T(); // empty it.
-
-        // double copy - VERY inefficient.
-        // reimplement json-spirit reader to optimize this 
-        // or possibly use someting else than a memorystream to hold the data... and use this buffer directly..
-
-        avro::StreamReader stream0(*src.get());
-        std::stringstream  stream1;
-
-        while (stream0.hasMore())
-        {
-            uint8_t ch = stream0.read();
-            stream1.write((const char*)&ch, 1);
-        }
-
-        try
-        {
-            json_spirit::Value value;
-            read(stream1, value);
-            const json_spirit::Object& root = value.get_obj();
-            return json_decode(root, dst);
-        }
-        catch (std::exception& e)
-        {
-            BOOST_LOG_TRIVIAL(error) << "json_decode(std::istream&, " << typeid(T).name() << " exception: " << e.what();
-            return false;
-        }
-    }
-    */
-
 }; // namespace

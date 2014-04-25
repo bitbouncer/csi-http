@@ -60,7 +60,7 @@ namespace csi
             }
 
             // if we failed to find a handler - we better do something with this connection...
-            connection->reply().create(reply_t::not_found);
+            connection->reply().create(csi::http::not_found);
             //LOG_WARNING() << to_string(context->auth._remote_endpoint) << " id: " << remote_id_to_string(context->auth) << " " << http_method_str(context->request_method()) << " " << context->request_url() << " status: " << context->reply.status;
         }
 

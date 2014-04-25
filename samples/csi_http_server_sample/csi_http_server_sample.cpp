@@ -86,7 +86,7 @@ public:
 private:
     void _handle_post(const boost::system::error_code& ec, std::shared_ptr<timer>&, std::shared_ptr<sample_data_req1>&, csi::http_server::connection* context)
     {
-        context->reply().create(csi::http_server::reply_t::ok);
+        context->reply().create(csi::http::ok);
         context->notify_async_reply_done();
     }
     boost::asio::io_service& _ios;
@@ -108,10 +108,10 @@ public:
             if (csi::json_spirit_decode(context->request().content(), *req1))
                 _service->post(req1, context);
             else
-                context->reply().create(csi::http_server::reply_t::bad_request);
+                context->reply().create(csi::http::bad_request);
             return;
         }
-        context->reply().create(csi::http_server::reply_t::bad_request);
+        context->reply().create(csi::http::bad_request);
     }
     sample_service* _service;
 };

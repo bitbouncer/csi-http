@@ -61,14 +61,14 @@ namespace csi
         {
             if (context->request().method() != csi::http::GET)
             {
-                context->reply().create(reply_t::bad_request);
+                context->reply().create(csi::http::bad_request);
                 return;
             }
 
             // must not not contain ".."
             if (rel_url.find("..") != std::string::npos)
             {
-                context->reply().create(reply_t::bad_request);
+                context->reply().create(csi::http::bad_request);
                 return;
             }
 
@@ -83,7 +83,7 @@ namespace csi
 
             if (!boost::filesystem::exists(full_path))
             {
-                context->reply().create(reply_t::not_found);
+                context->reply().create(csi::http::not_found);
                 return;
             }
 
@@ -100,10 +100,10 @@ namespace csi
             }
             catch (...)
             {
-                context->reply().create(reply_t::not_found);
+                context->reply().create(csi::http::not_found);
                 return;
             }
-            context->reply().create(reply_t::ok, extension_to_type(extension));
+            context->reply().create(csi::http::ok, extension_to_type(extension));
         }
     } // namespace server
 } // namespace http

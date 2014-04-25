@@ -42,7 +42,7 @@ private:
         sample::HelloWorldResponse resp;
         resp.message = "hello to you!";
         csi::avro_binary_encode<sample::HelloWorldResponse>(resp, context->reply().content());
-        context->reply().create(csi::http_server::reply_t::ok);
+        context->reply().create(csi::http::ok);
         context->notify_async_reply_done();
     }
 
@@ -67,7 +67,7 @@ public:
                 sample::HelloWorldResponse response;
                 response.message = request->message;
                 csi::avro_binary_encode<sample::HelloWorldResponse>(response, context->reply().content());
-                context->reply().create(csi::http_server::reply_t::ok);
+                context->reply().create(csi::http::ok);
             }
             else
             { 
@@ -77,7 +77,7 @@ public:
         }
         else
         {
-            context->reply().create(csi::http_server::reply_t::bad_request);
+            context->reply().create(csi::http::bad_request);
         }
     }
 
