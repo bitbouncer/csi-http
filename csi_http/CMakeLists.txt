@@ -3,6 +3,9 @@ SET(LIB_SRCS
 	csi_http.cpp
 	spinlock.cpp
 	spinlock.h
+	avro_encoding.cpp
+	avro_encoding.h
+	json_encoding.h
 	client/http_client.h
 	client/http_client.cpp
 	server/connection.h

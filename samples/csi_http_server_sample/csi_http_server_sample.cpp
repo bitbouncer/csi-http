@@ -16,6 +16,7 @@
 #include <boost/bind.hpp>
 #include <csi_http/server/unsecure_server.h>
 #include "../csi_json_spirit/json_spirit.h"
+#include <csi_http/json_encoding.h>
 
 static const std::string ACCEPTS_TAG("Accept");
 

@@ -11,6 +11,7 @@
 #include <boost/log/expressions.hpp>
 #include <csi_http/client/http_client.h>
 #include "../csi_json_spirit/json_spirit.h"
+#include <csi_http/json_encoding.h>
 
 struct sample_data_req1
 {
@@ -25,6 +26,14 @@ void json_encode(const sample_data_req1& sd, json_spirit::Object& obj)
     obj.push_back(json_spirit::Pair("delay", sd.delay));
     obj.push_back(json_spirit::Pair("email", sd.email));
     obj.push_back(json_spirit::Pair("phone", sd.phone));
+}
+
+template<class Request>
+std::shared_ptr<csi::http_client::call_context> create_json_spirit_request(csi::http::method_t method, const std::string& uri, const Request& request, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout)
+{
+    std::shared_ptr<csi::http_client::call_context> p(new csi::http_client::call_context(method, uri, headers, timeout));
+    csi::json_spirit_encode(request, p->tx_content());
+    return p;
 }
 
 int main(int argc, char **argv)
@@ -57,7 +66,7 @@ int main(int argc, char **argv)
         payload.delay = 1;
 
         handler.perform_async(
-            csi::create_json_spirit_request(csi::http::POST, "127.0.0.1:8090/rest/sample", payload, { "Content-Type:application/json", "Accept:application/json" }, std::chrono::milliseconds(1000)),
+            create_json_spirit_request(csi::http::POST, "127.0.0.1:8090/rest/sample", payload, { "Content-Type:application/json", "Accept:application/json" }, std::chrono::milliseconds(1000)),
             [&payload](csi::http_client::call_context::handle request)
         {
             BOOST_LOG_TRIVIAL(info) << "perform_async POST " << request->uri() << " res " << request->http_result() << " req delay=" << payload.delay << " actual delay=" << request->milliseconds();

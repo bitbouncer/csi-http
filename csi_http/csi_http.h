@@ -6,9 +6,7 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-
 #pragma once
-
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -18,10 +16,6 @@
 #include <stdint.h>
 #include <boost/function.hpp>
 #include <iostream>
-
-#include <avro/Specific.hh>
-#include <avro/Encoder.hh>
-#include <avro/Decoder.hh>
 
 namespace csi
 {
@@ -111,108 +105,7 @@ namespace csi
             PATCH = 24,
             PURGE = 25
         };
-
     }
-
-    template<class T>
-    void avro_json_encode(const T& src, avro::OutputStream& dst)
-    {
-        avro::EncoderPtr e = avro::jsonEncoder()
-            e->init(dst);
-        avro::encode(*e, src);
-        // push back unused characters to the output stream again... really strange... 			
-        // otherwise content_length will be a multipple of 4096
-        e->flush();
-    }
-
-    template<class T>
-    T& avro_json_decode(avro::InputStream& src, T& dst)
-    {
-        avro::DecoderPtr e = avro::binaryDecoder();
-        e->init(src);
-        avro::decode(*e, dst);
-        return dst;
-    }
-
-    template<class T>
-    void avro_binary_encode(const T& src, avro::OutputStream& dst)
-    {
-        avro::EncoderPtr e = avro::binaryEncoder();
-        e->init(dst);
-        avro::encode(*e, src);
-        // push back unused characters to the output stream again... really strange... 			
-        // otherwise content_length will be a multipple of 4096
-        e->flush();
-    }
-
-    template<class T>
-    T& avro_binary_decode(avro::InputStream& src, T& dst)
-    {
-        avro::DecoderPtr e = avro::binaryDecoder();
-        e->init(src);
-        avro::decode(*e, dst);
-        return dst;
-    }
-
-    template<class T>
-    T& avro_binary_decode(std::auto_ptr<avro::InputStream>& src, T& dst)
-    {
-        avro::DecoderPtr e = avro::binaryDecoder();
-        e->init(*src);
-        avro::decode(*e, dst);
-        return dst;
-    }
-
-
-    // naive implementation... 
-    // double copy - first to string and then to buffer
-    template<class T>
-    void json_spirit_encode(const T& src, avro::OutputStream& dst)
-    {
-        json_spirit::Object root_object;
-        json_encode(src, root_object);
-        //double copy... reimplement json-spirit writer...
-        std::string s = write(root_object); // options can be added  for debugging .. prettyprint
-        avro::StreamWriter writer(dst);
-        writer.writeBytes((const uint8_t*)s.data(), s.size());
-    }
-
-    // naive implementation... 
-    // double copy - first to std::stringstream and then to object
-    template<class T>
-    bool json_spirit_decode(std::auto_ptr<avro::InputStream>& src, T& dst)
-    {
-        dst = T(); // empty it.
-
-        // double copy - VERY inefficient.
-        // reimplement json-spirit reader to optimize this 
-        // or possibly use someting else than a memorystream to hold the data... and use this buffer directly..
-
-        avro::StreamReader stream0(*src.get());
-        std::stringstream  stream1;
-
-        while (stream0.hasMore())
-        {
-            uint8_t ch = stream0.read();
-            stream1.write((const char*)&ch, 1);
-        }
-
-        try
-        {
-            json_spirit::Value value;
-            read(stream1, value);
-            const json_spirit::Object& root = value.get_obj();
-            return json_decode(root, dst);
-        }
-        catch (std::exception& e)
-        {
-            BOOST_LOG_TRIVIAL(error) << "json_decode(std::istream&, " << typeid(T).name() << " exception: " << e.what();
-            return false;
-        }
-    }
-
-    // missing funktion in avro::StreamReader* 
-    size_t readBytes(avro::StreamReader* stream, uint8_t* b, size_t n);
 }; // namespace csi
 
 std::string to_string(csi::http::status_type s);

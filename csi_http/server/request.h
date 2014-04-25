@@ -10,6 +10,7 @@
 #pragma once
 #include <vector>
 #include "header.h"
+#include <avro/Specific.hh>
 #include <csi_http/csi_http.h>
 
 namespace csi

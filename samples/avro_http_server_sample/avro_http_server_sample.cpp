@@ -16,7 +16,7 @@
 #include <boost/bind.hpp>
 #include <csi_http/server/unsecure_server.h>
 #include <csi_http/csi_http.h>
-
+#include <csi_http/avro_encoding.h>
 #include "../avro_defs/hello_world_request.h"
 #include "../avro_defs/hello_world_response.h"
 

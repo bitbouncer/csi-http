@@ -13,8 +13,10 @@
 #include <boost/asio/steady_timer.hpp>
 #include <boost/chrono/system_clocks.hpp>
 #include <boost/function.hpp>
+#include <avro/Specific.hh>
 #include <csi_http/csi_http.h>
 #include <csi_http/spinlock.h>
+#include <csi_http/avro_encoding.h>
 
 #pragma once
 
@@ -197,14 +199,6 @@ namespace csi
     {
         std::shared_ptr<http_client::call_context> p(new http_client::call_context(csi::http::POST, uri, headers, timeout));
         avro_json_encode(request, p->tx_content());
-        return p;
-    }
-
-    template<class Request>
-    std::shared_ptr<http_client::call_context> create_json_spirit_request(csi::http::method_t method, const std::string& uri, const Request& request, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout)
-    {
-        std::shared_ptr<http_client::call_context> p(new http_client::call_context(method, uri, headers, timeout));
-        json_spirit_encode(request, p->tx_content());
         return p;
     }
 

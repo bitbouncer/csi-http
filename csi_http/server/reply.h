@@ -13,6 +13,7 @@
 #include <vector>
 #include <boost/asio.hpp>
 #include <boost/utility.hpp>
+#include <avro/Specific.hh>
 #include <csi_http/csi_http.h>
 #include "header.h"
 
