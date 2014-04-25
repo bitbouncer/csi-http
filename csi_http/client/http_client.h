@@ -53,7 +53,7 @@ namespace csi
                 _curl_easy = curl_easy_init();
             }
 
-            call_context::~call_context()
+            ~call_context()
             {
                 //std::cerr << this << std::endl;
                 {
