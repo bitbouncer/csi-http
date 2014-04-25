@@ -56,7 +56,7 @@ namespace csi
     }
 
     template<class T>
-    T& avro_binary_decode(std::auto_ptr<avro::InputStream>& src, T& dst)
+    T& avro_binary_decode(std::auto_ptr<avro::InputStream> src, T& dst)
     {
         avro::DecoderPtr e = avro::binaryDecoder();
         e->init(*src);

@@ -1,8 +1,3 @@
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-#include <stdio.h>
-
 #include <thread>
 #include <chrono>
 #include <functional>
@@ -35,8 +30,6 @@ void handle_post(csi::http_client::call_context::handle request)
     {
         BOOST_LOG_TRIVIAL(error) << "handle_post " << request->uri() << " transport_res = " << request->transport_result() << " http_res " << request->http_result();
     }
-
-    //std::cerr << " ref count " << request.use_count() << std::endl;
 }
 
 int main(int argc, char **argv)
@@ -62,9 +55,5 @@ int main(int argc, char **argv)
     std::this_thread::sleep_for(std::chrono::milliseconds(30000));
     handler.close();
     th.join();
-    BOOST_LOG_TRIVIAL(info) << "done";
-
-    _CrtDumpMemoryLeaks();
-
     return 0;
 }
