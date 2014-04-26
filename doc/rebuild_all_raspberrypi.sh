@@ -1,7 +1,7 @@
 . third_part_versions
-cd ~/
-mkdir -p source/raspberrypi
-cd source/raspberrypi
+
+mkdir -p ~/source/raspberrypi
+cd ~/source/raspberrypi
 
 git clone https://github.com/bitbouncer/csi-http
 git clone https://github.com/raspberrypi/tools.git --depth 1

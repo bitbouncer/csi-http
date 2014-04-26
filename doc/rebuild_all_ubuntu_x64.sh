@@ -1,9 +1,8 @@
 #!/usr/bin/bash
 . third_part_versions
 
-cd 
-mkdir -p source/linux
-cd source/linux
+mkdir -p ~/source/linux
+cd ~/source/linux
 
 wget ftp://ftp.sunet.se/pub/www/servers/apache/dist/avro/avro-$AVRO_VERSION/cpp/avro-cpp-$AVRO_VERSION.tar.gz
 tar xvf avro-cpp-$AVRO_VERSION.tar.gz
