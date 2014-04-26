@@ -58,12 +58,12 @@ rm -rf build
 mkdir build
 cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../csi-http/toolchains/raspberrypi.toolchain.x64.cmake ..
+make
 cd ..
 mkdir avro
 cp -r api/*.* avro
 cd ..
 
-cd ..
 
 #we skip openssl form now since csi-http have not enabled support yet
 #zlib & bzip2 needs to be there for boost iostreams to compile but since were not using it at the moment - skip this
