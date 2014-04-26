@@ -19,11 +19,10 @@ unzip boost_$BOOST_VERSION.zip
 
 git clone https://github.com/bitbouncer/csi-http
 
-
 #build the stuff
 cd boost_$BOOST_VERSION
 ./bootstrap.sh
-./b2 -j 4
+./b2 -j 8
 cd ..
 
 cd avro-cpp-$AVRO_VERSION
