@@ -1,12 +1,12 @@
-sudo apt-get install git wget cmake unzip emacs build-essential g++ python-dev autotools-dev libicu-dev zlib1g-dev openssl libssl-dev libcurl4-openssl-dev libbz2-dev libcur13
+#!/usr/bin/bash
+
+. third_part_versions
+
 cd ~/
 
-mkdir source
-cd source
+mkdir -p source/linux
+cd source/linux
 
-export BOOST_VERSION=1_55_0
-export BOOST_VERSION_DOTTED=1.55.0
-export AVRO_VERSION=1.7.6
 
 wget ftp://ftp.sunet.se/pub/www/servers/apache/dist/avro/avro-$AVRO_VERSION/cpp/avro-cpp-$AVRO_VERSION.tar.gz
 tar xvf avro-cpp-$AVRO_VERSION.tar.gz
