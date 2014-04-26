@@ -53,11 +53,16 @@ cd avro-cpp-$AVRO_VERSION
 export BOOST_ROOT=$PWD/../boost_$BOOST_VERSION 
 export Boost_INCLUDE_DIR=$PWD/../boost_$BOOST_VERSION/boost
 export PI_TOOLS_HOME=~/xtools/tools
+rm -rf avro
 rm -rf build
 mkdir build
 cd build
 cmake -DCMAKE_TOOLCHAIN_FILE=../csi-http/toolchains/raspberrypi.toolchain.x64.cmake ..
 cd ..
+mkdir avro
+cp -r api/*.* avro
+cd ..
+
 cd ..
 
 #we skip openssl form now since csi-http have not enabled support yet
