@@ -69,17 +69,17 @@ make
 cd ..
 
 cd avro-cpp-$AVRO_VERSION
-export BOOST_ROOT=../boost_$BOOST_VERSION 
-export PI_TOOLS_HOME=../tools
+export BOOST_ROOT=$PWD/../boost_$BOOST_VERSION 
+export Boost_INCLUDE_DIR=$PWD/../boost_$BOOST_VERSION/boost
+export PI_TOOLS_HOME=$PWD/../tools
 rm -rf raspberrypi
 mkdir raspberrypi
 cd raspberrypi
-cmake -DCMAKE_TOOLCHAIN_FILE=../csi-http/toolchains/raspberrypi.toolchain32.cmake ..
+cmake -DCMAKE_TOOLCHAIN_FILE=../csi-http/toolchains/raspberrypi.toolchain.x64.cmake ..
+cd ..
 cd ..
 
-
-
 #we skip openssl form now since csi-http have not enabled support yet
-#zlib needs to be there for boost iostreams to compile but since were not using it at the moment - skip this
+#zlib & bzip2 needs to be there for boost iostreams to compile but since were not using it at the moment - skip this
 
-
+cd csi-http
