@@ -3,16 +3,9 @@ mkdir -p ~/source/raspberrypi
 cd ~/source/raspberrypi
 
 git clone https://github.com/bitbouncer/csi-http
-git clone https://github.com/raspberrypi/tools.git --depth 1
 
-#32 bit tools
-#echo "export PATH=~/raspberrypi/tools/arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi/bin:\$PATH" >> ~/.bashrc
-#64 bit tools
-echo "export PATH=~/raspberrypi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin:\$PATH" >> ~/.bashrc
-source ~/.bashrc
-
-wget http://curl.haxx.se/download/curl-$CURL_VERSION.tar.bz2 -O ~/curl-$CURL_VERSION.tar.bz2
-tar xvf ~/curl-$CURL_VERSION.tar.bz2
+wget http://curl.haxx.se/download/curl-$CURL_VERSION.tar.bz2 -Ocurl-$CURL_VERSION.tar.bz2
+tar xvf curl-$CURL_VERSION.tar.bz2
 
 wget http://sourceforge.net/projects/boost/files/boost/$BOOST_VERSION_DOTTED/boost_$BOOST_VERSION.tar.gz/download -Oboost_$BOOST_VERSION.tar.gz
 tar xvf boost_$BOOST_VERSION.tar.gz
