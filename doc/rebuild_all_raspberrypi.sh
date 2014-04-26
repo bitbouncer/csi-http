@@ -1,20 +1,9 @@
-sudo apt-get install cmake wget unzip cmake wget wput libpcre3 libpcre3-dev build-essential git ia32-libs
-
+. third_part_versions
 cd ~/
-mkdir raspberrypi
-cd raspberrypi
+mkdir -p source/raspberrypi
+cd source/raspberrypi
+
 git clone https://github.com/bitbouncer/csi-http
-
-export BOOST_VERSION=1_55_0
-export BOOST_VERSION_DOTTED=1.55.0
-export AVRO_VERSION=1.7.6
-export CURL_VERSION=7.35.0
-export ZLIB_VERSION=1.2.8
-export BZLIB2_VERSION=1.0.6
-
-
-export OPEN_SSL_VERSION=1.0.1g
-
 git clone https://github.com/raspberrypi/tools.git --depth 1
 
 #32 bit tools
@@ -83,3 +72,6 @@ cd ..
 #zlib & bzip2 needs to be there for boost iostreams to compile but since were not using it at the moment - skip this
 
 cd csi-http
+bash build_raspberrypi.sh
+cd ..
+
