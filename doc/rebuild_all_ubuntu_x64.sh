@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 . third_part_versions
 
-cd 
+cd  ~/
 mkdir -p source/linux
 cd source/linux
 
