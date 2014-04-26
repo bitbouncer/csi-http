@@ -1,5 +1,4 @@
 . third_part_versions
-
 mkdir -p ~/source/raspberrypi
 cd ~/source/raspberrypi
 
