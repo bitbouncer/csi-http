@@ -2,7 +2,7 @@ csi-http
 ========
 
 
-avro aware but generic http client and server library written in C++11 
+avro aware but generic http client and server library written in C++ (11) 
 
 - syncronous  client based on libcurl and boost ASIO
 - asyncronous client based on libcurl and boost ASIO
@@ -11,6 +11,8 @@ avro aware but generic http client and server library written in C++11
 - specifically supports connection:keep-alive
 
 NO SUPPORT FOR AVRO RPC (YET)
+
+Windows, Linux (and Raspberry Pi) support. Should be trivial to add OSX support
 
 
 
