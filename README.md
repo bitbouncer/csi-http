@@ -9,7 +9,7 @@ avro aware http client and server library written in C++ (11)
 - asyncronous high performance server based on Joyents http_parser and boost ASIO
 - generic GET, PUT, POST
 - REST calls using avro binary encoded payloads
-- specifically supports connection:keep-alive 
+- HTTP 1.1, specifically supports connection:keep-alive 
  
 Missing:
 - no support for avro rpc
