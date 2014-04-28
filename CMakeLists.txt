@@ -19,6 +19,7 @@ include_directories (
     ${AVROCPP_PATH}
 	${HTTP_PARSER_PATH})
 
+
 if(WIN32)
 add_definitions(-DCURL_STATICLIB)
 ADD_LIBRARY(ZLIB STATIC IMPORTED)
