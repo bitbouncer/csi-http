@@ -17,9 +17,11 @@ unzip boost_$BOOST_VERSION.zip
 #wget http://curl.haxx.se/download/curl-$CURL_VERSION.zip
 #unzip curl-$CURL_VERSION.zip
 
-wget https://github.com/joyent/http-parser/archive/v%JOYENT_HTTP_VERSION%.tar.gz -Ohttp_parser-v%JOYENT_HTTP_VERSION%.tar.gz
-gzip -d http_parser-v%JOYENT_HTTP_VERSION%.tar.gz
-tar -xvf http_parser-v%JOYENT_HTTP_VERSION%.tar
+
+wget https://github.com/joyent/http-parser/archive/v$JOYENT_HTTP_VERSION.tar.gz -Ohttp_parser-v$JOYENT_HTTP_VERSION.tar.gz
+gzip -d http_parser-v$JOYENT_HTTP_VERSION.tar.gz
+tar -xvf http_parser-v$JOYENT_HTTP_VERSION.tar
+
 
 git clone https://github.com/bitbouncer/csi-http
 
