@@ -3,6 +3,7 @@ mkdir -p ~/source/raspberrypi
 cd ~/source/raspberrypi
 
 git clone https://github.com/bitbouncer/csi-http
+git clone https://github.com/bitbouncer/json-spirit
 
 wget http://curl.haxx.se/download/curl-$CURL_VERSION.tar.bz2 -Ocurl-$CURL_VERSION.tar.bz2
 tar xvf curl-$CURL_VERSION.tar.bz2

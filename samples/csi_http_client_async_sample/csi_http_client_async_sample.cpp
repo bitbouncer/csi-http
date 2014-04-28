@@ -10,7 +10,7 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 #include <csi_http/client/http_client.h>
-#include "../csi_json_spirit/json_spirit.h"
+#include <json_spirit/json_spirit.h>
 #include <csi_http/json_encoding.h>
 
 struct sample_data_req1

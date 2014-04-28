@@ -5,6 +5,7 @@ SET(AVROCPP_PATH        ${CMAKE_SOURCE_DIR}/../avro-cpp-1.7.6)
 SET(OPENSSLPATH         ${CMAKE_SOURCE_DIR}/../openssl-1.0.1g)
 SET(LIBCURL_PATH        ${CMAKE_SOURCE_DIR}/../curl-7.35.0)
 SET(HTTP_PARSER_PATH    ${CMAKE_SOURCE_DIR}/../http-parser-2.3)
+SET(JSON_SPIRIT_PATH    ${CMAKE_SOURCE_DIR}/../json-spirit)
 
 SET(LIBRARY_OUTPUT_PATH     ${CMAKE_SOURCE_DIR}/lib)
 SET(EXECUTABLE_OUTPUT_PATH  ${CMAKE_SOURCE_DIR}/bin)
@@ -17,7 +18,8 @@ include_directories (
     ${CMAKE_SOURCE_DIR}
     ${LIBCURL_PATH}/include
     ${AVROCPP_PATH}
-	${HTTP_PARSER_PATH})
+	${HTTP_PARSER_PATH}
+	${JSON_SPIRIT_PATH})
 
 
 if(WIN32)
@@ -36,15 +38,15 @@ add_definitions(-D_SCL_SECURE_NO_WARNINGS)
 add_definitions(/wd4996) #'strdup': The POSIX name for this item is deprecated
 add_definitions(/wd4197) # 'cf_atomic32' : top-level volatile in cast is ignored
 
-set(BOOST_LIB_PATH      ${BOOST_PATH}/lib/$(Platform)/lib)
-set(CURL_LIB_PATH       ${LIBCURL_PATH}/libs/$(Platform)/$(Configuration))
-set(CRYPTOPP_LIB_PATH   ${CRYPTOPP_PATH}/lib/$(Platform)/$(Configuration))
-set(AVROCPP_LIB_PATH    ${AVROCPP_PATH}/lib/$(Platform)/$(Configuration))
+set(BOOST_LIB_PATH       ${BOOST_PATH}/lib/$(Platform)/lib)
+set(CURL_LIB_PATH        ${LIBCURL_PATH}/libs/$(Platform)/$(Configuration))
+set(AVROCPP_LIB_PATH     ${AVROCPP_PATH}/lib/$(Platform)/$(Configuration))
+set(JSON_SPIRIT_LIB_PATH ${JSON_SPIRIT_PATH}/lib/$(Platform)/$(Configuration))
 
 SET(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib/$(Platform))
 
 include_directories(${OPENSSLPATH}/inc32)
-link_directories(${CMAKE_SOURCE_DIR}/lib/$(Platform) ${OPENSSLPATH}/out32dll ${BOOST_LIB_PATH} ${CURL_LIB_PATH} ${AVROCPP_LIB_PATH})
+link_directories(${CMAKE_SOURCE_DIR}/lib/$(Platform) ${OPENSSLPATH}/out32dll ${BOOST_LIB_PATH} ${CURL_LIB_PATH} ${AVROCPP_LIB_PATH} ${JSON_SPIRIT_LIB_PATH})
 set(EXT_LIBS csi-http csi-http-parser avrocpp_s libcurl libeay32 ssleay32 Ws2_32) 
 endif()
 
@@ -52,6 +54,7 @@ if(__LINUX__)
 set(AVROCPP_LIB_PATH ${AVROCPP_PATH}/build)
 set(CURL_LIB_PATH  ${LIBCURL_PATH}/lib/.libs)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
+set(JSON_SPIRIT_LIB_PATH ${JSON_SPIRIT_PATH}/lib)
 
 add_definitions(-D__LINUX__)
 add_definitions(-fPIC)
@@ -59,8 +62,7 @@ add_definitions(-std=c++11)
 add_definitions(-DBOOST_LOG_DYN_LINK)
 #add_definitions(-DBOOST_ASIO_HAS_STD_CHRONO_MONOTONIC_CLOCK)
 add_definitions(-Wno-deprecated)
-link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${AVROCPP_LIB_PATH} ${CURL_LIB_PATH})
-#set(EXT_LIBS csi-http avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_program_options boost_filesystem boost_regex boost_chrono boost_locale curl rt pthread c)
+link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${AVROCPP_LIB_PATH} ${CURL_LIB_PATH} ${JSON_SPIRIT_LIB_PATH})
 set(EXT_LIBS csi-http csi-http-parser avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_program_options boost_filesystem boost_regex boost_chrono curl rt pthread c)
 endif()
 
@@ -75,7 +77,7 @@ add_definitions(-fPIC)
 add_definitions(-std=c++11)
 add_definitions(-DBOOST_LOG_DYN_LINK)
 include_directories(/opt/X11/include)
-link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${CURL_LIB_PATH} ${AVROCPP_LIB_PATH})
+link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${CURL_LIB_PATH} ${AVROCPP_LIB_PATH} ${JSON_SPIRIT_LIB_PATH})
 set(EXT_LIBS csi-http csi-http-parser avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_filesystem boost_locale LIBCURL LIBCRYPTOPP stdc++ pthread c)
 endif()
 

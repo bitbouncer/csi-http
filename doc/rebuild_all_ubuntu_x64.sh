@@ -4,6 +4,9 @@
 mkdir -p ~/source/linux
 cd ~/source/linux
 
+git clone https://github.com/bitbouncer/csi-http
+git clone https://github.com/bitbouncer/json-spirit
+
 wget ftp://ftp.sunet.se/pub/www/servers/apache/dist/avro/avro-$AVRO_VERSION/cpp/avro-cpp-$AVRO_VERSION.tar.gz
 tar xvf avro-cpp-$AVRO_VERSION.tar.gz
 
@@ -22,8 +25,6 @@ wget https://github.com/joyent/http-parser/archive/v$JOYENT_HTTP_VERSION.tar.gz 
 gzip -d http_parser-v$JOYENT_HTTP_VERSION.tar.gz
 tar -xvf http_parser-v$JOYENT_HTTP_VERSION.tar
 
-
-git clone https://github.com/bitbouncer/csi-http
 
 #build the stuff
 cd boost_$BOOST_VERSION

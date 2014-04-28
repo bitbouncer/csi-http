@@ -17,7 +17,8 @@ set AVRO_VERSION=1.7.6
 set ZLIB_VERSION=1.2.8
 set JOYENT_HTTP_VERSION=2.3
 
-call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
+start /wait git clone https://github.com/bitbouncer/csi-http
+start /wait git clone https://github.com/bitbouncer/json-spirit
 
 start /wait call wget ftp://ftp.sunet.se/pub/www/servers/apache/dist/avro/avro-1.7.6/cpp/avro-cpp-%AVRO_VERSION%.tar.gz
 start /wait call tar xvf avro-cpp-%AVRO_VERSION%.tar.gz
@@ -39,8 +40,8 @@ start /wait wget https://github.com/joyent/http-parser/archive/v%JOYENT_HTTP_VER
 start /wait gzip -d http_parser-v%JOYENT_HTTP_VERSION%.tar.gz
 start /wait tar -xvf http_parser-v%JOYENT_HTTP_VERSION%.tar
 
-start /wait git clone https://github.com/bitbouncer/csi-http
 
+call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
 
 @ECHO BUILDING OPENSSL
 cd %OPEN_SSL_VERSION%
