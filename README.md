@@ -19,9 +19,13 @@ Platforms:
  - Linux, GCC
  - Raspberry Pi, GCC
 
-Contains code written by
-- Christopher M. Kohlhoff     Boost Software License, Version 1.0.
-- Svante Karlsson, CSI AB     Boost Software License, Version 1.0.
+License:
+- Boost Software License, Version 1.0.
+
+Some samples uses embedded json library with different licensing terms.
+
+
+
 
 
 
