@@ -22,7 +22,6 @@ Platforms:
 License:
 - Boost Software License, Version 1.0.
 
-Some samples uses embedded json library with different licensing terms.
 
 
 
