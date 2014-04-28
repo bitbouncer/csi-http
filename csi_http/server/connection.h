@@ -14,7 +14,7 @@
 #include <boost/asio.hpp>
 #include "request.h"
 #include "reply.h"
-#include "http_parser.h"
+#include <http_parser.h>
 #include <csi_http/spinlock.h>
 
 namespace csi

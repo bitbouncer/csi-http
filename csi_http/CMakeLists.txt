@@ -12,8 +12,8 @@ SET(LIB_SRCS
 	server/connection.cpp
 	server/file_request_handler.cpp
 	server/file_request_handler.h
-	server/http_parser.h
-	server/http_parser.cpp
+	#server/http_parser.h
+	#server/http_parser.cpp
 	server/header.h
 	server/io_service_pool.h
 	server/io_service_pool.cpp

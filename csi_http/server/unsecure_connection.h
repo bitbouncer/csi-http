@@ -18,7 +18,7 @@
 #include <boost/lexical_cast.hpp>
 #include <csi_http/server/connection.h>
 #include "request_handler.h"
-#include "http_parser.h"
+#include <http_parser.h>
 
 namespace csi
 {
