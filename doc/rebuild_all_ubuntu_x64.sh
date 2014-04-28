@@ -40,5 +40,15 @@ mkdir avro
 cp -r api/*.* avro
 cd ..
 
+cd json-spirit
+export BOOST_ROOT=../boost_$BOOST_VERSION 
+mkdir build
+cd build
+cmake ..
+make
+cd ..
+cd ..
+
+
 cd csi-http
 bash build_linux.sh

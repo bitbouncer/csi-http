@@ -69,6 +69,18 @@ mkdir avro
 cp -r api/*.* avro
 cd ..
 
+cd json-spirit
+export BOOST_ROOT=$PWD/../boost_$BOOST_VERSION 
+export Boost_INCLUDE_DIR=$PWD/../boost_$BOOST_VERSION/boost
+export PI_TOOLS_HOME=~/xtools/tools
+rm -rf avro
+rm -rf build
+mkdir build
+cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../csi-http/toolchains/raspberrypi.toolchain.x64.cmake ..
+make
+cd ..
+cd ..
 
 #we skip openssl form now since csi-http have not enabled support yet
 #zlib & bzip2 needs to be there for boost iostreams to compile but since were not using it at the moment - skip this

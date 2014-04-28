@@ -110,6 +110,9 @@ mkdir avro
 xcopy /e /s api\*.* avro
 cd ..
 
+cd json-spirit
+call build_windows.bat
+cd ..
 
 
 cd csi-http
