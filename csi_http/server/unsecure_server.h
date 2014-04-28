@@ -38,10 +38,6 @@ namespace csi
 
             /// Stop the server.
             void stop();
-
-            //void add_request_handler(const std::string& vpath, request_handler*);
-            //void set_logging_state(bool state);
-
         private:
             /// Handle completion of an asynchronous accept operation.
             void handle_accept(const boost::system::error_code& e);

@@ -1,5 +1,15 @@
-#ifndef CSI_SSL_SESSION_H
-#define CSI_SSL_SESSION_H
+//
+// ssl_connection.h
+// ~~~~~~~~~~~~~~
+//
+// Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
+// Copyright (c) 2003-2010 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+//
+// Distributed under the Boost Software License, Version 1.0. (See accompanying
+// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+//
+
+#pragma once
 
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
@@ -7,64 +17,40 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
-#include "context.hpp"
-#include "request_handler.hpp"
+#include "connection.h"
+#include "request_handler.h"
 
-namespace http
+namespace csi
 {
-	namespace server2 
-	{
-		class ssl_session : public context, public boost::enable_shared_from_this<ssl_session>, private boost::noncopyable
-		{
-		public:
-			typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket;
+    namespace http_server
+    {
+        class ssl_server;
+        class ssl_connection : public connection, public boost::enable_shared_from_this<ssl_connection>
+        {
+        public:
+            typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket;
+            ssl_connection(boost::asio::io_service& io_service, ssl_server* server, boost::asio::ssl::context& context, const std::string& request_id_header);
+            ~ssl_connection();
 
-			ssl_session(boost::asio::io_service& io_service, root_request_handler& handler, boost::asio::ssl::context& context);
-			~ssl_session();
-			ssl_socket::lowest_layer_type& socket() { return socket_.lowest_layer(); }
-			void start();
+            ssl_socket::lowest_layer_type& socket() { return _socket.lowest_layer(); }
+            void start();
 
-			virtual void send_reply();
-			virtual void wait_for_async_reply();
-			virtual void notify_async_reply_done();
-		private:
-			void handle_handshake(const boost::system::error_code& error);
-			void handle_read(const boost::system::error_code& error, size_t bytes_transferred);
-			void handle_write_complete(const boost::system::error_code& error, std::size_t bytes_transferred);
-			void handle_timer(const boost::system::error_code& e);
-			void handle_async_call(const boost::system::error_code& e);
-			void handle_shutdown(const boost::system::error_code& e);
+            virtual void send_reply();
+            virtual void wait_for_async_reply();
+            virtual void notify_async_reply_done();
+        private:
+            void handle_handshake(const boost::system::error_code& error);
+            void handle_read(const boost::system::error_code& error, size_t bytes_transferred);
+            void handle_write_complete(const boost::system::error_code& error, std::size_t bytes_transferred);
+            void handle_timer(const boost::system::error_code& e);
+            void handle_async_call(const boost::system::error_code& e);
+            void handle_shutdown(const boost::system::error_code& e);
 
-			/// Socket for the connection.
-			ssl_socket	socket_;
-
-			/// The handler used to process the incoming request.
-			root_request_handler& request_handler_;
-
-			/// Buffer for incoming data.
-			//boost::array<char, 8192> buffer_;
-
-			/// The incoming request.
-			//request request_;
-
-			/// The parser for the incoming request.
-			//request_parser request_parser_;
-
-			/// The reply to be sent back to the client.
-			//reply reply_;
-
-			//bool	_logging;
-			//enum		{ max_length = 1024 };
-			//char		data_[max_length];
-
-			boost::asio::deadline_timer timer_;
-
-			//bool	_second; // debug only
-            //authentication  auth_;
-		};
-
-		typedef boost::shared_ptr<ssl_session> ssl_session_ptr;
-	};
+            /// Socket for the connection.
+            ssl_socket	                _socket;
+            ssl_server*			            _server;
+            boost::asio::deadline_timer _timer;
+        };
+        typedef boost::shared_ptr<ssl_connection> ssl_session_ptr;
+    };
 };
-
-#endif
