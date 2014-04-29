@@ -27,7 +27,7 @@ namespace csi
 {
     namespace http_server
     {
-        unsecure_connection::unsecure_connection(boost::asio::io_service& io_service, unsecure_server* server, const std::string& request_id_header) :
+        http_connection::http_connection(boost::asio::io_service& io_service, http_server* server, const std::string& request_id_header) :
             connection(io_service, request_id_header),
             _socket(io_service),
             _server(server),
@@ -35,24 +35,24 @@ namespace csi
         {
         }
 
-        unsecure_connection::~unsecure_connection()
+        http_connection::~http_connection()
         {
             boost::system::error_code ignored_ec;
             _connection_timeout_timer.cancel(ignored_ec);
             _socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
         }
 
-        boost::asio::ip::tcp::socket& unsecure_connection::socket()
+        boost::asio::ip::tcp::socket& http_connection::socket()
         {
             return _socket;
         }
 
-        void unsecure_connection::start()
+        void http_connection::start()
         {
-            _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&unsecure_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+            _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&http_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
         }
 
-        void unsecure_connection::send_reply()
+        void http_connection::send_reply()
         {
             BOOST_LOG_TRIVIAL(debug) << "unsecure_connection::send_reply";
             _waiting_for_async_reply = false;
@@ -60,24 +60,24 @@ namespace csi
             if (!keep_alive())
                 reply().headers.push_back(header("Connection", "close"));
 
-            boost::asio::async_write(_socket, reply().to_buffers(), boost::bind(&unsecure_connection::handle_write, shared_from_this(), boost::asio::placeholders::error));
+            boost::asio::async_write(_socket, reply().to_buffers(), boost::bind(&http_connection::handle_write, shared_from_this(), boost::asio::placeholders::error));
         }
 
-        void unsecure_connection::wait_for_async_reply()
+        void http_connection::wait_for_async_reply()
         {
             _waiting_for_async_reply = true;
             //connection_timeout_timer_.expires_from_now(std::chrono::milliseconds(5000)); // 5 sec for debugging
             _connection_timeout_timer.expires_from_now(boost::posix_time::time_duration(0, 0, 5, 0)); // 5 sec for debugging
-            _connection_timeout_timer.async_wait(boost::bind(&unsecure_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
+            _connection_timeout_timer.async_wait(boost::bind(&http_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
         }
 
-        void unsecure_connection::notify_async_reply_done()
+        void http_connection::notify_async_reply_done()
         {
             BOOST_LOG_TRIVIAL(debug) << "unsecure_connection::notify_async_reply_done";
-            _io_service.post(boost::bind(&unsecure_connection::handle_async_reply_done, shared_from_this()));
+            _io_service.post(boost::bind(&http_connection::handle_async_reply_done, shared_from_this()));
         }
 
-        void unsecure_connection::handle_read(const boost::system::error_code& e, std::size_t bytes_transferred)
+        void http_connection::handle_read(const boost::system::error_code& e, std::size_t bytes_transferred)
         {
             if (e == boost::asio::error::operation_aborted)
             {
@@ -111,7 +111,7 @@ namespace csi
                     {
                         //connection_timeout_timer_.expires_from_now(std::chrono::seconds(300)); // wait very long since we cant be dead when async call returns
                         _connection_timeout_timer.expires_from_now(boost::posix_time::time_duration(1, 0, 5, 0)); // wait very long since we cant be dead when async call returns
-                        _connection_timeout_timer.async_wait(boost::bind(&unsecure_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
+                        _connection_timeout_timer.async_wait(boost::bind(&http_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
                     }
                     else
                     {
@@ -122,8 +122,8 @@ namespace csi
                 {
                     //connection_timeout_timer_.expires_from_now(std::chrono::milliseconds(5000)); // 5s for debugging
                     _connection_timeout_timer.expires_from_now(boost::posix_time::time_duration(0, 0, 5, 0)); // 5s for debugging
-                    _connection_timeout_timer.async_wait(boost::bind(&unsecure_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
-                    _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&unsecure_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+                    _connection_timeout_timer.async_wait(boost::bind(&http_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
+                    _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&http_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
                 }
             }
             else
@@ -137,7 +137,7 @@ namespace csi
             // handler returns. The connection class's destructor closes the socket.
         }
 
-        void unsecure_connection::handle_write(const boost::system::error_code& e)
+        void http_connection::handle_write(const boost::system::error_code& e)
         {
             //BOOST_LOG_TRIVIAL(trace) << "handle_write";
             if (e == boost::asio::error::operation_aborted)
@@ -168,8 +168,8 @@ namespace csi
                 _connection_timeout_timer.cancel(ec);
                 //connection_timeout_timer_.expires_from_now(std::chrono::milliseconds(5000));
                 _connection_timeout_timer.expires_from_now(boost::posix_time::time_duration(0, 0, 5, 0));
-                _connection_timeout_timer.async_wait(boost::bind(&unsecure_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
-                _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&unsecure_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+                _connection_timeout_timer.async_wait(boost::bind(&http_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
+                _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&http_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
             }
             else
             {
@@ -177,7 +177,7 @@ namespace csi
             }
         }
 
-        void unsecure_connection::handle_shutdown(const boost::system::error_code& e)
+        void http_connection::handle_shutdown(const boost::system::error_code& e)
         {
             if (!e)
             {
@@ -190,7 +190,7 @@ namespace csi
             }
         }
 
-        void unsecure_connection::handle_timer(const boost::system::error_code& e)
+        void http_connection::handle_timer(const boost::system::error_code& e)
         {
             if (e == boost::asio::error::operation_aborted)
                 return;
@@ -203,7 +203,7 @@ namespace csi
             }
         }
 
-        void unsecure_connection::handle_async_reply_done()
+        void http_connection::handle_async_reply_done()
         {
             boost::system::error_code ec;
             _connection_timeout_timer.cancel(ec);

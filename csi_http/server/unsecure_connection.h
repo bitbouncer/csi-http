@@ -24,16 +24,16 @@ namespace csi
 {
     namespace http_server
     {
-        class unsecure_server;
+        class http_server;
 
         /// Represents a single connection from a client.
-        class unsecure_connection : public connection, public boost::enable_shared_from_this<unsecure_connection>
+        class http_connection : public connection, public boost::enable_shared_from_this<http_connection>
         {
         public:
             /// Construct a connection with the given io_service.
-            unsecure_connection(boost::asio::io_service& io_service, unsecure_server* server, const std::string& request_id_header);
+            http_connection(boost::asio::io_service& io_service, http_server* server, const std::string& request_id_header);
 
-            ~unsecure_connection();
+            ~http_connection();
 
             /// Get the socket associated with the connection.
             boost::asio::ip::tcp::socket& socket();
@@ -61,10 +61,10 @@ namespace csi
             void handle_async_reply_done();
 
             boost::asio::ip::tcp::socket _socket;
-            unsecure_server*			       _server;
+            http_server*			           _server;
             boost::asio::deadline_timer  _connection_timeout_timer;
         };
-        typedef boost::shared_ptr<unsecure_connection> connection_ptr;
+        //typedef boost::shared_ptr<http_connection> connection_ptr;
     } // namespace server
 } // namespace csi
 

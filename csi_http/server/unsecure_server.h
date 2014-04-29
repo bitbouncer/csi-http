@@ -25,13 +25,13 @@ namespace csi
     namespace http_server
     {
         /// The top-level class of the HTTP server.
-        class unsecure_server : public server
+        class http_server : public server
         {
         public:
             /// Construct the server to listen on the specified TCP address and port
-            unsecure_server(const std::string& address, int port, io_service_pool* pool, const std::string& request_id_header = "request_id");
+            http_server(const std::string& address, int port, io_service_pool* pool, const std::string& request_id_header = "request_id");
 
-            unsecure_server(int port, io_service_pool* pool, const std::string& request_id_header = "request_id");
+            http_server(int port, io_service_pool* pool, const std::string& request_id_header = "request_id");
 
             /// Run the server's io_service loop.
             void run();
@@ -43,12 +43,12 @@ namespace csi
             void handle_accept(const boost::system::error_code& e);
 
             /// The pool of io_service objects used to perform asynchronous operations.
-            io_service_pool&                _io_service_pool;
+            io_service_pool&                    _io_service_pool;
             /// Acceptor used to listen for incoming connections.
-            boost::asio::ip::tcp::acceptor  _acceptor;
+            boost::asio::ip::tcp::acceptor      _acceptor;
             /// The next connection to be accepted.
-            connection_ptr                  _new_connection;
-            std::string                     _request_id_header;
+            boost::shared_ptr<http_connection>  _new_connection;
+            std::string                         _request_id_header;
         };
     } // namespace http_server
 } // namespace csi

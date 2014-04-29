@@ -123,7 +123,7 @@ int main(int argc, char** argv)
         csi::http_server::io_service_pool	  io_pool(no_of_threads);
         sample_service					            my_service(io_pool.get_io_service());
         sample_request_handler			        my_sample_request_handler(&my_service);
-        csi::http_server::unsecure_server	  s1(my_address, port, &io_pool);
+        csi::http_server::http_server	      s1(my_address, port, &io_pool);
 
         boost::thread stat_thread(boost::bind(print_stat, &my_sample_request_handler));
 
