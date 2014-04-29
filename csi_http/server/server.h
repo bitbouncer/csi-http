@@ -15,7 +15,7 @@
 
 namespace csi
 {
-    namespace http_server
+    namespace http
     {
         class request_handler;
         class connection;
@@ -26,7 +26,7 @@ namespace csi
             server();
         public:
             void add_request_handler(const std::string& vpath, request_handler* p);
-            void handle_request(csi::http_server::connection*);
+            void handle_request(csi::http::connection*);
         private:
             std::map<std::string, request_handler*> _handlers;
             static bool url_decode(const std::string& in, std::string& out);

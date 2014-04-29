@@ -14,7 +14,7 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/bind.hpp>
-#include <csi_http/server/ssl_server.h>
+#include <csi_http/server/https_server.h>
 #include <csi_http/csi_http.h>
 #include <csi_http/avro_encoding.h>
 #include "../avro_defs/hello_world_request.h"
@@ -27,7 +27,7 @@ public:
     sample_service(boost::asio::io_service& ios) : _ios(ios) {}
     virtual ~sample_service() {}
 
-    void post(std::shared_ptr<sample::HelloWorldRequest> pd, csi::http_server::connection* context)
+    void post(std::shared_ptr<sample::HelloWorldRequest> pd, csi::http::connection* context)
     {
         BOOST_LOG_TRIVIAL(info) << pd->message << ", sleeping  " << pd->delay << " ms";
         std::shared_ptr<timer> pt(new timer(_ios, boost::chrono::milliseconds(pd->delay)));
@@ -36,7 +36,7 @@ public:
     }
 
 private:
-    void _handle_post(const boost::system::error_code& ec, std::shared_ptr<timer> dummy, std::shared_ptr<sample::HelloWorldRequest> dummy2, csi::http_server::connection* context)
+    void _handle_post(const boost::system::error_code& ec, std::shared_ptr<timer> dummy, std::shared_ptr<sample::HelloWorldRequest> dummy2, csi::http::connection* context)
     {
         BOOST_LOG_TRIVIAL(info) << "done and returning ok  ";
         sample::HelloWorldResponse resp;
@@ -49,14 +49,14 @@ private:
     boost::asio::io_service& _ios;
 };
 
-class sample_request_handler : public csi::http_server::request_handler
+class sample_request_handler : public csi::http::request_handler
 {
 public:
     sample_request_handler(sample_service* ps) : _service(ps) {}
     ~sample_request_handler() {}
 
     /// Handle a request and produce a reply.
-    virtual void handle_request(const std::string& rel_url, csi::http_server::connection* context)
+    virtual void handle_request(const std::string& rel_url, csi::http::connection* context)
     {
         if (context->request().method() == csi::http::POST)
         {
@@ -84,14 +84,14 @@ public:
     sample_service* _service;
 };
 
-void print_stat(csi::http_server::request_handler* handler)
+void print_stat(csi::http::request_handler* handler)
 {
     uint64_t last = handler->get_no_of_requests();
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
         uint64_t stat = handler->get_no_of_requests();
-        BOOST_LOG_TRIVIAL(info) << (stat - last) / 5.0 << " RPC/s " << " connections = " << csi::http_server::connection::connection_count();
+        BOOST_LOG_TRIVIAL(info) << (stat - last) / 5.0 << " RPC/s " << " connections = " << csi::http::connection::connection_count();
         last = stat;
     }
 }
@@ -141,10 +141,10 @@ int main(int argc, char** argv)
 
     try
     {
-        csi::http_server::io_service_pool	  io_pool(no_of_threads);
+        csi::http::io_service_pool	        io_pool(no_of_threads);
         sample_service					            my_service(io_pool.get_io_service());
         sample_request_handler			        my_sample_request_handler(&my_service);
-        csi::http_server::https_server      s1(my_address, port, &io_pool, *_ssl_context);
+        csi::http::https_server             s1(my_address, port, &io_pool, *_ssl_context);
 
         boost::thread stat_thread(boost::bind(print_stat, &my_sample_request_handler));
 

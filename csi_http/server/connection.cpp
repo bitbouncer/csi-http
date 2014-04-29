@@ -16,7 +16,7 @@
 
 namespace csi
 {
-    namespace http_server
+    namespace http
     {
         static http_parser_settings		s_parser_settings;
 

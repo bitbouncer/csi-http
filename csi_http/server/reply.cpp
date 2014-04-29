@@ -13,7 +13,7 @@
 #include "reply.h"
 
 namespace csi {
-    namespace http_server {
+    namespace http {
 
         namespace http_version_strings
         {
@@ -307,5 +307,5 @@ namespace csi {
             _avro_tx_buffer = avro::memoryOutputStream();
             _boost_tx_buffer.reset();
         }
-    } // namespace http_server
+    } // namespace http
 } // namespace csi

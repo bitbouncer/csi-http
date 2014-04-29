@@ -17,7 +17,7 @@
 
 namespace csi
 {
-    namespace http_server
+    namespace http
     {
         /// A reply to be sent to a client.
         class reply_t : public boost::noncopyable

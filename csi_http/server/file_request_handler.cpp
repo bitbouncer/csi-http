@@ -22,7 +22,7 @@
 
 namespace csi
 {
-    namespace http_server
+    namespace http
     {
 
         static struct mapping
@@ -57,7 +57,7 @@ namespace csi
         {
         }
 
-        void file_request_handler::handle_request(const std::string& rel_url, csi::http_server::connection* context)
+        void file_request_handler::handle_request(const std::string& rel_url, csi::http::connection* context)
         {
             if (context->request().method() != csi::http::GET)
             {

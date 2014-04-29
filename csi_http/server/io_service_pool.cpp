@@ -17,7 +17,7 @@
 
 namespace csi 
 {
-    namespace http_server 
+    namespace http 
     {
         io_service_pool::io_service_pool(std::size_t pool_size)
             : _next_io_service(0)
@@ -67,5 +67,5 @@ namespace csi
                 _next_io_service = 0;
             return io_service;
         }
-    } // namespace http_server
+    } // namespace http
 } // namespace csi

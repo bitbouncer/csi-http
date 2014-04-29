@@ -15,7 +15,7 @@
 
 namespace csi
 {
-    namespace http_server
+    namespace http
     {
         /// A request to from a client
         class request_t : public boost::noncopyable

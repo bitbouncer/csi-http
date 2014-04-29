@@ -12,7 +12,7 @@
 #include <string>
 
 namespace csi {
-    namespace http_server {
+    namespace http {
 
         struct header
         {
@@ -21,6 +21,6 @@ namespace csi {
             std::string name;
             std::string value;
         };
-    }; // namespace http_server
+    }; // namespace http
 }; // namespace csi
 

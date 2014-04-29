@@ -19,7 +19,7 @@
 
 namespace csi
 {
-    namespace http_server
+    namespace http
     {
         class connection : private boost::noncopyable
         {

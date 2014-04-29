@@ -15,14 +15,14 @@
 
 namespace csi
 {
-    namespace http_server
+    namespace http
     {
         class connection;
         class file_request_handler : public request_handler
         {
         public:
             file_request_handler(const boost::filesystem::path& http_root);
-            virtual void handle_request(const std::string& rel_url, csi::http_server::connection*);
+            virtual void handle_request(const std::string& rel_url, csi::http::connection*);
         private:
             boost::filesystem::path			_http_root;
         };

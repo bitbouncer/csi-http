@@ -17,7 +17,7 @@
 
 namespace csi
 {
-    namespace http_server
+    namespace http
     {
         /// A pool of io_service objects.
         class io_service_pool : private boost::noncopyable

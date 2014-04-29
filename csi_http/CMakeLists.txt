@@ -12,8 +12,6 @@ SET(LIB_SRCS
 	server/connection.cpp
 	server/file_request_handler.cpp
 	server/file_request_handler.h
-	#server/http_parser.h
-	#server/http_parser.cpp
 	server/header.h
 	server/io_service_pool.h
 	server/io_service_pool.cpp
@@ -23,19 +21,19 @@ SET(LIB_SRCS
 	server/request_handler.h
 	server/server.h
 	server/server.cpp
-	server/unsecure_server.h
-	server/unsecure_server.cpp		
-	server/unsecure_connection.h			
-	server/unsecure_connection.cpp				
+	server/http_server.h
+	server/http_server.cpp		
+	server/http_connection.h			
+	server/http_connection.cpp				
 	)
 	
 if (__CSI_HAS_OPENSSL__)
 	SET(LIB_SRCS 
 		${LIB_SRCS} 
-		server/ssl_server.h
-		server/ssl_server.cpp				
-		server/ssl_connection.h
-		server/ssl_connection.cpp					
+		server/https_server.h
+		server/https_server.cpp				
+		server/https_connection.h
+		server/https_connection.cpp					
 	)
 endif()
 

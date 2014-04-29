@@ -14,7 +14,7 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/bind.hpp>
-#include <csi_http/server/unsecure_server.h>
+#include <csi_http/server/http_server.h>
 #include <json_spirit/json_spirit.h>
 #include <csi_http/json_encoding.h>
 
@@ -77,14 +77,14 @@ class sample_service
 public:
     sample_service(boost::asio::io_service& ios) : _ios(ios) {}
     virtual ~sample_service() {}
-    void post(std::shared_ptr<sample_data_req1>& pd, csi::http_server::connection* context)
+    void post(std::shared_ptr<sample_data_req1>& pd, csi::http::connection* context)
     {
         std::shared_ptr<timer> pt(new timer(_ios, boost::chrono::milliseconds(pd->delay)));
         pt->async_wait(boost::bind(&sample_service::_handle_post, this, _1, pt, pd, context));
         context->wait_for_async_reply();
     }
 private:
-    void _handle_post(const boost::system::error_code& ec, std::shared_ptr<timer>&, std::shared_ptr<sample_data_req1>&, csi::http_server::connection* context)
+    void _handle_post(const boost::system::error_code& ec, std::shared_ptr<timer>&, std::shared_ptr<sample_data_req1>&, csi::http::connection* context)
     {
         context->reply().create(csi::http::ok);
         context->notify_async_reply_done();
@@ -92,14 +92,14 @@ private:
     boost::asio::io_service& _ios;
 };
 
-class sample_request_handler : public csi::http_server::request_handler
+class sample_request_handler : public csi::http::request_handler
 {
 public:
     sample_request_handler(sample_service* ps) : _service(ps) {}
     ~sample_request_handler() {}
 
     /// Handle a request and produce a reply.
-    virtual void handle_request(const std::string& rel_url, csi::http_server::connection* context)
+    virtual void handle_request(const std::string& rel_url, csi::http::connection* context)
     {
         //const std::vector<header>&	headers = context->headers();
         if (context->request().method() == csi::http::POST)
@@ -140,10 +140,10 @@ int main(int argc, char** argv)
 
     try
     {
-        csi::http_server::io_service_pool	io_pool(no_of_threads);
+        csi::http::io_service_pool	      io_pool(no_of_threads);
         sample_service					          my_service(io_pool.get_io_service());
         sample_request_handler			      my_request_handler(&my_service);
-        csi::http_server::http_server	    s1(my_address, port, &io_pool);
+        csi::http::http_server	          s1(my_address, port, &io_pool);
         s1.add_request_handler("/rest/sample", &my_request_handler);
         io_pool.run();
     }

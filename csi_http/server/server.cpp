@@ -13,7 +13,7 @@
 
 namespace csi
 {
-    namespace http_server
+    namespace http
     {
         server::server() { }
 
@@ -23,7 +23,7 @@ namespace csi
         }
 
         /// Handle a request and produce a reply.
-        void server::handle_request(csi::http_server::connection* connection)
+        void server::handle_request(csi::http::connection* connection)
         {
             const std::string& url = connection->request().url();
             size_t url_len = connection->request().url().size();
