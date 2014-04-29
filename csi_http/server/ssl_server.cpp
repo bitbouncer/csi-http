@@ -21,7 +21,7 @@ namespace csi
 {
     namespace http_server
     {
-        ssl_server::ssl_server(const std::string& address, int port, io_service_pool* pool, boost::asio::ssl::context& ssl_context, const std::string& request_id_header) :
+        https_server::https_server(const std::string& address, int port, io_service_pool* pool, boost::asio::ssl::context& ssl_context, const std::string& request_id_header) :
             _io_service_pool(*pool),
             _ssl_context(ssl_context),
             _request_id_header(request_id_header),
@@ -36,26 +36,15 @@ namespace csi
             boost::asio::ip::tcp::resolver::query query(address, port_string);
             boost::asio::ip::tcp::endpoint endpoint = *resolver.resolve(query);
             
-            // make this a parameter TBD svante - move this to the sample....
-            _ssl_context.set_options(
-                boost::asio::ssl::context::default_workarounds
-                | boost::asio::ssl::context::no_sslv2
-                | boost::asio::ssl::context::single_dh_use);
-            _ssl_context.set_verify_mode(boost::asio::ssl::context::verify_peer);
-            _ssl_context.set_password_callback(boost::bind(&ssl_server::get_password, this));
-            //_ssl_context.use_certificate_chain_file("server.pem");
-            //_ssl_context.use_private_key_file("server.pem", boost::asio::ssl::context::pem);
-
-            //_ssl_context.set_verify_callback();
-            //???context_.use_tmp_dh_file("dh512.pem");
+        
             
             
             _acceptor.open(endpoint.protocol());
             _acceptor.set_option(boost::asio::ip::tcp::acceptor::reuse_address(true));
             _acceptor.bind(endpoint);
             _acceptor.listen();
-            _new_connection.reset(new ssl_connection(_io_service_pool.get_io_service(), this, _ssl_context, _request_id_header));
-            _acceptor.async_accept(_new_connection->socket(), boost::bind(&ssl_server::handle_accept, this, boost::asio::placeholders::error));
+            _new_connection.reset(new https_connection(_io_service_pool.get_io_service(), this, _ssl_context, _request_id_header));
+            _acceptor.async_accept(_new_connection->socket(), boost::bind(&https_server::handle_accept, this, boost::asio::placeholders::error));
         }
 
 
@@ -88,7 +77,7 @@ namespace csi
         //    acceptor_.async_accept(new_connection_->socket(), boost::bind(&ssl_server::handle_accept, this, boost::asio::placeholders::error));
         //}
 
-
+        /*
         void ssl_server::set_certificate(const boost::filesystem::path& path)
         {
             //LOG_TRACE() << "ssl_server::set_certificate " << path.generic_string();
@@ -96,19 +85,15 @@ namespace csi
             _ssl_context.use_certificate_file(path.generic_string(), boost::asio::ssl::context::pem);
             _ssl_context.use_private_key_file(path.generic_string(), boost::asio::ssl::context::pem);
         }
-
-        std::string ssl_server::get_password() const
-        {
-            return "test";
-        }
-
-        void ssl_server::handle_accept(const boost::system::error_code& e)
+        */
+ 
+        void https_server::handle_accept(const boost::system::error_code& e)
         {
             if (!e)
             {
                 _new_connection->start();
-                _new_connection.reset(new ssl_connection(_io_service_pool.get_io_service(), this, _ssl_context, _request_id_header));
-                _acceptor.async_accept(_new_connection->socket(), boost::bind(&ssl_server::handle_accept, this, boost::asio::placeholders::error));
+                _new_connection.reset(new https_connection(_io_service_pool.get_io_service(), this, _ssl_context, _request_id_header));
+                _acceptor.async_accept(_new_connection->socket(), boost::bind(&https_server::handle_accept, this, boost::asio::placeholders::error));
             }
             else
             {

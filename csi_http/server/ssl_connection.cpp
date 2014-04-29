@@ -8,7 +8,7 @@ namespace csi
 {
     namespace http_server
     {
-        ssl_connection::ssl_connection(boost::asio::io_service& io_service, ssl_server* server, boost::asio::ssl::context& sslcontext, const std::string& request_id_header) :
+        https_connection::https_connection(boost::asio::io_service& io_service, https_server* server, boost::asio::ssl::context& sslcontext, const std::string& request_id_header) :
            connection(io_service, request_id_header),
            _socket(io_service, sslcontext),
            _server(server),
@@ -17,40 +17,40 @@ namespace csi
             //LOG_TRACE() << "ssl_session created";
         }
 
-        ssl_connection::~ssl_connection()
+        https_connection::~https_connection()
         {
             //LOG_TRACE() << "ssl_session closed";
         }
 
-        void ssl_connection::start()
+        void https_connection::start()
         {
             //initiate a timeout here
             //timer.start...
 
             _socket.async_handshake(boost::asio::ssl::stream_base::server,
-                boost::bind(&ssl_connection::handle_handshake, shared_from_this(),
+                boost::bind(&https_connection::handle_handshake, shared_from_this(),
                 boost::asio::placeholders::error));
 
             //LOG_TRACE() << "ssl_session::start()";
         }
 
-        void ssl_connection::send_reply()
+        void https_connection::send_reply()
         {
             //LOG_TRACE() << "ssl_session::send_reply";
             _waiting_for_async_reply = false;
-            boost::asio::async_write(_socket, _reply.to_buffers(), boost::bind(&ssl_connection::handle_write_complete, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+            boost::asio::async_write(_socket, _reply.to_buffers(), boost::bind(&https_connection::handle_write_complete, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
         }
 
-        void ssl_connection::wait_for_async_reply()
+        void https_connection::wait_for_async_reply()
         {
             _waiting_for_async_reply = true;
             //LOG_TRACE() << "ssl_session::wait_for_async_reply";
             boost::posix_time::time_duration timeout(1, 0, 60, 0); // 5 sec for debugging
             _timer.expires_from_now(timeout);
-            _timer.async_wait(boost::bind(&ssl_connection::handle_async_call, shared_from_this(), boost::asio::placeholders::error));
+            _timer.async_wait(boost::bind(&https_connection::handle_async_call, shared_from_this(), boost::asio::placeholders::error));
         }
 
-        void ssl_connection::notify_async_reply_done()
+        void https_connection::notify_async_reply_done()
         {
             //if (!_waiting_for_async_reply)
             //	LOG_ERROR() << "ssl_session::notify_async_reply_done : NOT WAITING...";
@@ -60,7 +60,7 @@ namespace csi
             _timer.cancel(ec);
         }
 
-        void ssl_connection::handle_handshake(const boost::system::error_code& e)
+        void https_connection::handle_handshake(const boost::system::error_code& e)
         {
             if (!e)
             {
@@ -73,7 +73,7 @@ namespace csi
                 //public_key;
                 //fingerprint
 
-                _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&ssl_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+                _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&https_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
             }
             else
             {
@@ -81,7 +81,7 @@ namespace csi
             }
         }
 
-        void ssl_connection::handle_read(const boost::system::error_code& e, size_t bytes_transferred)
+        void https_connection::handle_read(const boost::system::error_code& e, size_t bytes_transferred)
         {
             if (e == boost::asio::error::operation_aborted)
             {
@@ -112,7 +112,7 @@ namespace csi
                     {
                         boost::posix_time::time_duration timeout(1, 0, 5, 0); // wait very long since we cant be dead when async call returns
                         _timer.expires_from_now(timeout);
-                        _timer.async_wait(boost::bind(&ssl_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
+                        _timer.async_wait(boost::bind(&https_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
                     }
                     else
                     {
@@ -123,8 +123,8 @@ namespace csi
                 {
                     boost::posix_time::time_duration timeout(0, 0, 5, 0); // 5 sec for debugging
                     _timer.expires_from_now(timeout);
-                    _timer.async_wait(boost::bind(&ssl_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
-                    _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&ssl_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
+                    _timer.async_wait(boost::bind(&https_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
+                    _socket.async_read_some(boost::asio::buffer(_buffer), boost::bind(&https_connection::handle_read, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
                 }
             }
             else
@@ -138,7 +138,7 @@ namespace csi
             // handler returns. The connection class's destructor closes the socket.
         }
 
-        void ssl_connection::handle_write_complete(const boost::system::error_code& e, std::size_t bytes_transferred)
+        void https_connection::handle_write_complete(const boost::system::error_code& e, std::size_t bytes_transferred)
         {
             if (e == boost::asio::error::operation_aborted)
             {
@@ -159,10 +159,10 @@ namespace csi
                 //boost::posix_time::time_duration timeout(0,0,0,boost::posix_time::time_duration::ticks_per_second()/10);
                 boost::posix_time::time_duration timeout(0, 0, 5, 0); // 5 sec for debugging
                 _timer.expires_from_now(timeout);
-                _timer.async_wait(boost::bind(&ssl_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
+                _timer.async_wait(boost::bind(&https_connection::handle_timer, shared_from_this(), boost::asio::placeholders::error));
 
                 _socket.async_read_some(boost::asio::buffer(_buffer),
-                    boost::bind(&ssl_connection::handle_read, shared_from_this(),
+                    boost::bind(&https_connection::handle_read, shared_from_this(),
                     boost::asio::placeholders::error,
                     boost::asio::placeholders::bytes_transferred));
             }
@@ -190,7 +190,7 @@ namespace csi
             */
         }
 
-        void ssl_connection::handle_shutdown(const boost::system::error_code& e)
+        void https_connection::handle_shutdown(const boost::system::error_code& e)
         {
             if (!e)
             {
@@ -203,7 +203,7 @@ namespace csi
             }
         }
 
-        void ssl_connection::handle_timer(const boost::system::error_code& e)
+        void https_connection::handle_timer(const boost::system::error_code& e)
         {
             if (e == boost::asio::error::operation_aborted)
             {
@@ -214,7 +214,7 @@ namespace csi
             {
                 //LOG_TRACE() << "ssl_session::handle_timer";
                 //socket_.cancel();
-                _socket.async_shutdown(boost::bind(&ssl_connection::handle_shutdown, shared_from_this(), boost::asio::placeholders::error));
+                _socket.async_shutdown(boost::bind(&https_connection::handle_shutdown, shared_from_this(), boost::asio::placeholders::error));
                 //boost::system::error_code ignored_ec;
                 //socket_.shutdown(ignored_ec);
             }
@@ -224,7 +224,7 @@ namespace csi
             }
         }
 
-        void ssl_connection::handle_async_call(const boost::system::error_code& e)
+        void https_connection::handle_async_call(const boost::system::error_code& e)
         {
             //if (!_waiting_for_async_reply)
             //	LOG_ERROR() << "ssl_session::handle_async_call : NOT WAITING...";
@@ -240,7 +240,7 @@ namespace csi
             {
                 //LOG_TRACE() << "ssl_session::handle_async_call";
                 boost::system::error_code ignored_ec;
-                _socket.async_shutdown(boost::bind(&ssl_connection::handle_shutdown, shared_from_this(), boost::asio::placeholders::error));
+                _socket.async_shutdown(boost::bind(&https_connection::handle_shutdown, shared_from_this(), boost::asio::placeholders::error));
                 //socket_.cancel(ignored_ec);
                 //socket_.async_shutdown(boost::bind(&session::handle_shutdown, shared_from_this(), boost::asio::placeholders::error));
                 //socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);

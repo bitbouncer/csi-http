@@ -24,13 +24,13 @@ namespace csi
 {
     namespace http_server
     {
-        class ssl_server;
-        class ssl_connection : public connection, public boost::enable_shared_from_this<ssl_connection>
+        class https_server;
+        class https_connection : public connection, public boost::enable_shared_from_this<https_connection>
         {
         public:
             typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket;
-            ssl_connection(boost::asio::io_service& io_service, ssl_server* server, boost::asio::ssl::context& context, const std::string& request_id_header);
-            ~ssl_connection();
+            https_connection(boost::asio::io_service& io_service, https_server* server, boost::asio::ssl::context& context, const std::string& request_id_header);
+            ~https_connection();
 
             ssl_socket::lowest_layer_type& socket() { return _socket.lowest_layer(); }
             void start();
@@ -48,9 +48,8 @@ namespace csi
 
             /// Socket for the connection.
             ssl_socket	                _socket;
-            ssl_server*			            _server;
+            https_server*			          _server;
             boost::asio::deadline_timer _timer;
         };
-        typedef boost::shared_ptr<ssl_connection> ssl_session_ptr;
     };
 };

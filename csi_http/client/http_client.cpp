@@ -375,8 +375,6 @@ namespace csi
         request->_avro_tx_stream = avro::memoryInputStream(*request->_avro_tx_buffer.get());
         request->_avro_tx_stream_reader.reset(*request->_avro_tx_stream.get());
 
-        //async_context* context = new async_context(request);
-
         curl_easy_setopt(request->_curl_easy, CURLOPT_OPENSOCKETFUNCTION, _opensocket_cb);
         curl_easy_setopt(request->_curl_easy, CURLOPT_OPENSOCKETDATA, this);
 
