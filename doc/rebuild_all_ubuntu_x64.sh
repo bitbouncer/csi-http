@@ -25,8 +25,17 @@ wget https://github.com/joyent/http-parser/archive/v$JOYENT_HTTP_VERSION.tar.gz 
 gzip -d http_parser-v$JOYENT_HTTP_VERSION.tar.gz
 tar -xvf http_parser-v$JOYENT_HTTP_VERSION.tar
 
-
 #build the stuff
+cd json-spirit
+export BOOST_ROOT=$PWD/../boost_$BOOST_VERSION 
+export Boost_INCLUDE_DIR=$PWD/../boost_$BOOST_VERSION/boost
+mkdir build
+cd build
+cmake ..
+make
+cd ..
+cd ..
+
 cd boost_$BOOST_VERSION
 ./bootstrap.sh
 ./b2 -j 8
@@ -40,14 +49,6 @@ mkdir avro
 cp -r api/*.* avro
 cd ..
 
-cd json-spirit
-export BOOST_ROOT=../boost_$BOOST_VERSION 
-mkdir build
-cd build
-cmake ..
-make
-cd ..
-cd ..
 
 
 cd csi-http
