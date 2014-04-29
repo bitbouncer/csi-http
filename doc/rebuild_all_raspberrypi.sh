@@ -54,6 +54,14 @@ cd curl-$CURL_VERSION
 make
 cd ..
 
+#build openssl
+export CFLAGS='-Os -march=armv6j -mfpu=vfp -mfloat-abi=hard'
+export CC=arm-linux-gnueabihf-gcc
+./Configure dist threads -D_REENTRANT no-shared
+sed -i 's/ -O/ -Os/g' Makefile
+make
+
+
 cd avro-cpp-$AVRO_VERSION
 export BOOST_ROOT=$PWD/../boost_$BOOST_VERSION 
 export Boost_INCLUDE_DIR=$PWD/../boost_$BOOST_VERSION/boost

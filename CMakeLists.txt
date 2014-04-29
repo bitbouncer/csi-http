@@ -19,7 +19,8 @@ include_directories (
     ${LIBCURL_PATH}/include
     ${AVROCPP_PATH}
 	${HTTP_PARSER_PATH}
-	${JSON_SPIRIT_PATH})
+	${JSON_SPIRIT_PATH}
+	${OPENSSLPATH}/include)
 
 
 if(WIN32)
@@ -53,8 +54,9 @@ endif()
 if(__LINUX__)
 set(AVROCPP_LIB_PATH ${AVROCPP_PATH}/build)
 set(CURL_LIB_PATH  ${LIBCURL_PATH}/lib/.libs)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 set(JSON_SPIRIT_LIB_PATH ${JSON_SPIRIT_PATH}/lib)
+
+set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 
 add_definitions(-D__LINUX__)
 add_definitions(-fPIC)
@@ -62,8 +64,8 @@ add_definitions(-std=c++11)
 add_definitions(-DBOOST_LOG_DYN_LINK)
 #add_definitions(-DBOOST_ASIO_HAS_STD_CHRONO_MONOTONIC_CLOCK)
 add_definitions(-Wno-deprecated)
-link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${AVROCPP_LIB_PATH} ${CURL_LIB_PATH} ${JSON_SPIRIT_LIB_PATH})
-set(EXT_LIBS csi-http csi-http-parser avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_program_options boost_filesystem boost_regex boost_chrono curl rt pthread c)
+link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${AVROCPP_LIB_PATH} ${CURL_LIB_PATH} ${JSON_SPIRIT_LIB_PATH} ${OPENSSLPATH})
+set(EXT_LIBS csi-http csi-http-parser avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_program_options boost_filesystem boost_regex boost_chrono curl crypto ssl rt pthread c)
 endif()
 
 if(__DARWIN__)
@@ -78,7 +80,7 @@ add_definitions(-std=c++11)
 add_definitions(-DBOOST_LOG_DYN_LINK)
 include_directories(/opt/X11/include)
 link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${CURL_LIB_PATH} ${AVROCPP_LIB_PATH} ${JSON_SPIRIT_LIB_PATH})
-set(EXT_LIBS csi-http csi-http-parser avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_filesystem boost_locale LIBCURL LIBCRYPTOPP stdc++ pthread c)
+set(EXT_LIBS csi-http csi-http-parser avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_filesystem boost_locale LIBCURL crypto ssl stdc++ pthread c)
 endif()
 
 #compile a library from third party source
