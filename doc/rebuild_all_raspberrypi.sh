@@ -55,11 +55,13 @@ make
 cd ..
 
 #build openssl
+cd openssl-$OPEN_SSL_VERSION
 export CFLAGS='-Os -march=armv6j -mfpu=vfp -mfloat-abi=hard'
 export CC=arm-linux-gnueabihf-gcc
 ./Configure dist threads -D_REENTRANT no-shared
 sed -i 's/ -O/ -Os/g' Makefile
 make
+cd ..
 
 
 cd avro-cpp-$AVRO_VERSION
