@@ -307,6 +307,10 @@ copy builds\libcurl-vc12-x64-debug-dll-ipv6-spnego\bin\libcurl_debug.dll libs\x6
 copy builds\libcurl-vc12-x64-release-dll-ipv6-spnego\bin\libcurl.dll libs\x64\Release\libcurl.dll 
 cd ..
 
+cd zlib-%ZLIB_VERSION%
+nmake -f win32/Makefile.msc
+cd ..
+
 @ECHO BUILDING BOOST
 cd boost_%BOOST_VERSION%
 rmdir /s /q bin.v2
@@ -336,6 +340,8 @@ cd ..
 mkdir avro
 xcopy /e /s api\*.* avro
 cd ..
+
+
 
 cd json-spirit
 call build_windows.bat
