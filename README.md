@@ -19,7 +19,7 @@ Platforms:
  - Linux, GCC
  - Raspberry Pi, GCC
 
-Setup instructions can be found in the doc directory.
+Setup instructions can also be found in the doc directory.
 
 Ubuntu:
 
@@ -275,7 +275,7 @@ set AVRO_VERSION=1.7.6
 set ZLIB_VERSION=1.2.8
 set JOYENT_HTTP_VERSION=2.3
 
-call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
+call "C:\Program Files (x86)\Microsoft Visual Studio %VISUALSTUDIO_VERSION%\VC\vcvarsall.bat" amd64
 
 @ECHO BUILDING OPENSSL
 cd %OPEN_SSL_VERSION%
@@ -284,8 +284,6 @@ ms\do_win64a
 nmake -f ms\nt.mak
 nmake -f ms\ntdll.mak
 cd ..
-@ECHO DONE WITH OPENSSL
-
 
 @ECHO BUILDING LIBCURL
 cd curl-%CURL_VERSION%
@@ -308,8 +306,6 @@ copy builds\libcurl-vc12-x64-release-dll-ipv6-spnego\lib\libcurl.lib libs\x64\Re
 copy builds\libcurl-vc12-x64-debug-dll-ipv6-spnego\bin\libcurl_debug.dll libs\x64\Debug\libcurl_debug.dll 
 copy builds\libcurl-vc12-x64-release-dll-ipv6-spnego\bin\libcurl.dll libs\x64\Release\libcurl.dll 
 cd ..
-@ECHO DONE WITH CURL
-
 
 @ECHO BUILDING BOOST
 cd boost_%BOOST_VERSION%
@@ -319,12 +315,9 @@ call bootstrap.bat
 b2 -j 4 -toolset=msvc-12.0 address-model=64 --build-type=complete --stagedir=lib\x64 stage -s ZLIB_SOURCE=%CD%\..\zlib-%ZLIB_VERSION%
 rmdir /s /q bin.v2
 cd ..
-@ECHO DONE WITH BOOST
-
-
 
 @ECHO BUILDING AVRO
-REM this is a ugly patch because I havn't figured out how to the original Cmakefile find boost...
+REM this is a ugly patch because I havn't figured out how to make the original CMakefile find boost...
 copy csi-http\patches\avro\CMakeLists.txt avro-cpp-%AVRO_VERSION%
 
 cd avro-cpp-%AVRO_VERSION%
@@ -348,13 +341,11 @@ cd json-spirit
 call build_windows.bat
 cd ..
 
-
 cd csi-http
 git pull
 call build_windows.bat
 cd ..
 ```
-
 
 License:
 - Boost Software License, Version 1.0.
