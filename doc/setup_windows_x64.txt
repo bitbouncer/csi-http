@@ -114,6 +114,12 @@ cd json-spirit
 call build_windows.bat
 cd ..
 
+cd zlib-%ZLIB_VERSION%
+nmake -f win32/Makefile.msc
+cd ..
+
+
+
 
 cd csi-http
 git pull

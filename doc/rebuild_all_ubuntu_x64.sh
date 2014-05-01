@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 . third_part_versions
 
+rm -rf ~/source/linux
 mkdir -p ~/source/linux
 cd ~/source/linux
 
@@ -19,7 +20,6 @@ unzip boost_$BOOST_VERSION.zip
 
 #wget http://curl.haxx.se/download/curl-$CURL_VERSION.zip
 #unzip curl-$CURL_VERSION.zip
-
 
 wget https://github.com/joyent/http-parser/archive/v$JOYENT_HTTP_VERSION.tar.gz -Ohttp_parser-v$JOYENT_HTTP_VERSION.tar.gz
 gzip -d http_parser-v$JOYENT_HTTP_VERSION.tar.gz

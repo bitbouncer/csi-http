@@ -1,5 +1,5 @@
 //
-// ssl_connection.h
+// https_connection.h
 // ~~~~~~~~~~~~~~
 //
 // Copyright 2014 Svante Karlsson CSI AB (svante.karlsson at csi dot se)
