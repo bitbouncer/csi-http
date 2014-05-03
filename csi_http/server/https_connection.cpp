@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <boost/bind.hpp>
+#include <boost/asio.hpp>
 #include "https_connection.h"
 #include "https_server.h"
 

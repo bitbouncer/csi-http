@@ -1,5 +1,5 @@
 //
-// server.cpp
+// https_server.cpp
 // ~~~~~~~~~~
 //
 // Copyright (c) 2003-2011 Christopher M. Kohlhoff (chris at kohlhoff dot com)
@@ -14,7 +14,6 @@
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include "https_server.h"
-
 
 namespace csi
 {

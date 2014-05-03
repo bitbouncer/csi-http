@@ -243,7 +243,7 @@ set JOYENT_HTTP_VERSION=2.3
 start /wait git clone https://github.com/bitbouncer/csi-http
 start /wait git clone https://github.com/bitbouncer/json-spirit
 
-start /wait call wget ftp://ftp.sunet.se/pub/www/servers/apache/dist/avro/avro-1.7.6/cpp/avro-cpp-%AVRO_VERSION%.tar.gz
+start /wait call wget ftp://ftp.sunet.se/pub/www/servers/apache/dist/avro/avro-%AVRO_VERSION%/cpp/avro-cpp-%AVRO_VERSION%.tar.gz
 start /wait call tar xvf avro-cpp-%AVRO_VERSION%.tar.gz
 
 start /wait wget http://zlib.net/zlib-%ZLIB_VERSION%.tar.gz

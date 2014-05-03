@@ -19,8 +19,7 @@ include_directories (
     ${LIBCURL_PATH}/include
     ${AVROCPP_PATH}
 	${HTTP_PARSER_PATH}
-	${JSON_SPIRIT_PATH}
-	${OPENSSLPATH}/include)
+	${JSON_SPIRIT_PATH})
 
 
 if(WIN32)
@@ -64,6 +63,7 @@ add_definitions(-std=c++11)
 add_definitions(-DBOOST_LOG_DYN_LINK)
 #add_definitions(-DBOOST_ASIO_HAS_STD_CHRONO_MONOTONIC_CLOCK)
 add_definitions(-Wno-deprecated)
+include_directories(${OPENSSLPATH}/include)
 link_directories(${BOOST_PATH}/stage/lib ${CMAKE_SOURCE_DIR}/lib ${AVROCPP_LIB_PATH} ${CURL_LIB_PATH} ${JSON_SPIRIT_LIB_PATH} ${OPENSSLPATH})
 set(EXT_LIBS csi-http csi-http-parser avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_program_options boost_filesystem boost_regex boost_chrono curl ssl crypto rt pthread c)
 endif()
