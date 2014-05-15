@@ -1,18 +1,18 @@
 csi-http
 ========
 
-
-avro aware http client and server library written in C++ (11) 
-
+async http client and server library written in C++ (11), builtin support for apache avro
 - syncronous  client based on libcurl and boost ASIO
 - asyncronous client based on libcurl and boost ASIO
 - asyncronous high performance server based on Joyents http_parser and boost ASIO
 - generic GET, PUT, POST
 - REST calls using avro binary encoded payloads
-- HTTP 1.1, specifically supports connection:keep-alive 
+- REST calls using json encoded payloads (with optional json-spirit library)
+- HTTP 1.1, specifically supports connection:keep-alive
+- tentative support for HTTPS using OpenSSL
  
 Missing:
-- no support for avro rpc
+- no support for avro rpc (REST calls with avro payload supported)
 
 Platforms:
  - Windows, Visual studio 2013
