@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 SET(BOOST_PATH          ${CMAKE_SOURCE_DIR}/../boost_1_55_0)
-SET(AVROCPP_PATH        ${CMAKE_SOURCE_DIR}/../avro-cpp-1.7.6)
+SET(AVROCPP_PATH        ${CMAKE_SOURCE_DIR}/../avro-cpp-1.7.7)
 SET(OPENSSLPATH         ${CMAKE_SOURCE_DIR}/../openssl-1.0.1g)
 SET(LIBCURL_PATH        ${CMAKE_SOURCE_DIR}/../curl-7.35.0)
 SET(HTTP_PARSER_PATH    ${CMAKE_SOURCE_DIR}/../http-parser-2.3)
