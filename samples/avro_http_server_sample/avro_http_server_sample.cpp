@@ -70,7 +70,7 @@ public:
                 context->reply().create(csi::http::ok);
             }
             else
-            { 
+            {
                 _service->post(request, context);
             }
             return; // 
@@ -120,14 +120,14 @@ int main(int argc, char** argv)
 
     try
     {
-        csi::http::io_service_pool	        io_pool(no_of_threads);
-        sample_service					            my_service(io_pool.get_io_service());
-        sample_request_handler			        my_sample_request_handler(&my_service);
-        csi::http::http_server	            s1(my_address, port, &io_pool);
+        csi::http::io_service_pool  io_pool(no_of_threads);
+        sample_service              my_service(io_pool.get_io_service());
+        sample_request_handler      my_sample_request_handler(&my_service);
+        csi::http::http_server      s1(my_address, port, &io_pool);
 
         boost::thread stat_thread(boost::bind(print_stat, &my_sample_request_handler));
 
-        s1.add_request_handler("/rest/avro_sample",         &my_sample_request_handler);
+        s1.add_request_handler("/rest/avro_sample", &my_sample_request_handler);
         io_pool.run();
     }
     catch (std::exception& e)

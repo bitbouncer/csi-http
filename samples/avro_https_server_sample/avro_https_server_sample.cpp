@@ -129,22 +129,16 @@ int main(int argc, char** argv)
         | boost::asio::ssl::context::single_dh_use
         );
 
-    //_ssl_context->set_verify_mode(boost::asio::ssl::context::verify_peer);
     _ssl_context->set_password_callback([](std::size_t max_length, boost::asio::ssl::context::password_purpose purpose) -> std::string { return "nisse"; });
-    //_ssl_context->use_certificate_chain_file("server.pem");
     _ssl_context->use_certificate_file("server.pem", boost::asio::ssl::context::pem);
     _ssl_context->use_private_key_file("server.pem", boost::asio::ssl::context::pem);
-    //_ssl_context->use_private_key_file("server.pem", boost::asio::ssl::context::pem);
-
-    //_ssl_context.set_verify_callback();
-    //???context_.use_tmp_dh_file("dh512.pem");
 
     try
     {
-        csi::http::io_service_pool	        io_pool(no_of_threads);
-        sample_service					            my_service(io_pool.get_io_service());
-        sample_request_handler			        my_sample_request_handler(&my_service);
-        csi::http::https_server             s1(my_address, port, &io_pool, *_ssl_context);
+        csi::http::io_service_pool io_pool(no_of_threads);
+        sample_service             my_service(io_pool.get_io_service());
+        sample_request_handler     my_sample_request_handler(&my_service);
+        csi::http::https_server    s1(my_address, port, &io_pool, *_ssl_context);
 
         boost::thread stat_thread(boost::bind(print_stat, &my_sample_request_handler));
 

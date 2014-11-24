@@ -40,8 +40,8 @@ namespace csi
             /// The headers to be included in the reply.
             std::vector<header>                    headers;
             /// The content to be sent in the reply.
-            std::auto_ptr<avro::OutputStream>			_avro_tx_buffer;
-            std::auto_ptr<std::vector<uint8_t>>		_boost_tx_buffer; // expensive double buffer - to be fixed.
+            std::auto_ptr<avro::OutputStream>      _avro_tx_buffer;
+            std::auto_ptr<std::vector<uint8_t>>    _boost_tx_buffer; // expensive double buffer - to be fixed.
         private:
             csi::http::status_type _status;
         };

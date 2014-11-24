@@ -24,7 +24,7 @@ namespace csi
             file_request_handler(const boost::filesystem::path& http_root);
             virtual void handle_request(const std::string& rel_url, csi::http::connection*);
         private:
-            boost::filesystem::path			_http_root;
+            boost::filesystem::path                        _http_root;
         };
     } // namespace server
 } // namespace http

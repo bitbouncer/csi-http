@@ -46,9 +46,8 @@ namespace csi
             void handle_async_call(const boost::system::error_code& e);
             void handle_shutdown(const boost::system::error_code& e);
 
-            /// Socket for the connection.
-            ssl_socket	                _socket;
-            https_server*			          _server;
+            ssl_socket                  _socket;
+            https_server*               _server;
             boost::asio::deadline_timer _timer;
         };
     };

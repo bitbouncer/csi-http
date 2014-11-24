@@ -93,10 +93,7 @@ namespace csi
             {
                 assert(false); // NOT implemneted for avro yet
                 boost::uintmax_t file_size = boost::filesystem::file_size(full_path);
-                //context->reply.contentX.reserve((size_t)file_size);
                 boost::filesystem::ifstream ifs(full_path, std::ios_base::binary);
-                //ifs.read(context->reply.contentX.data(), (std::streamsize) file_size);
-                //context->reply.contentX.set_size((size_t)file_size);
             }
             catch (...)
             {

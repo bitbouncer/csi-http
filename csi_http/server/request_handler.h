@@ -32,7 +32,7 @@ namespace csi
             request_handler() : _nr_of_requests(0) {}
             /// Handle a request and produce a reply.
             virtual void handle_request(const std::string& rel_url, csi::http::connection*) = 0;
-            void virtual incr_request_count()			      { csi::spinlock::scoped_lock xx(_spinlock); ++_nr_of_requests; }
+            void virtual incr_request_count()           { csi::spinlock::scoped_lock xx(_spinlock); ++_nr_of_requests; }
             uint64_t virtual get_no_of_requests() const { return _nr_of_requests; }
         protected:
             csi::spinlock   _spinlock;

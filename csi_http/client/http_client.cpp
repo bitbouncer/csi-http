@@ -20,7 +20,7 @@
 
 namespace csi
 {
-     size_t http_client::call_context::s_context_count = 0;
+    size_t http_client::call_context::s_context_count = 0;
     csi::spinlock http_client::call_context::s_spinlock;
 
     http_client::http_client(boost::asio::io_service& io_service) :
@@ -29,13 +29,10 @@ namespace csi
         _keepalive_timer(_io_service)
     {
         _multi = curl_multi_init();
-
         curl_multi_setopt(_multi, CURLMOPT_SOCKETFUNCTION, _sock_cb);
         curl_multi_setopt(_multi, CURLMOPT_SOCKETDATA, this);
         curl_multi_setopt(_multi, CURLMOPT_TIMERFUNCTION, _multi_timer_cb);
         curl_multi_setopt(_multi, CURLMOPT_TIMERDATA, this);
-
-        //_keepalive_timer.expires_from_now(std::chrono::milliseconds(1000));
         _keepalive_timer.expires_from_now(boost::chrono::milliseconds(1000));
         _keepalive_timer.async_wait(boost::bind(&http_client::keepalivetimer_cb, this, _1));
     }
@@ -78,39 +75,7 @@ namespace csi
         }
         return 0;
     }
-
-    // we have to lock this 
-    /* Check for completed transfers, and remove their easy handles */
-    /*
-    void http_client::check_multi_info()
-    {
-    CURLMsg *msg  = NULL;
-    int msgs_left = 0;
-
-    while ((msg = curl_multi_info_read(_multi, &msgs_left)))
-    {
-    if (msg->msg == CURLMSG_DONE)
-    {
-    CURL* easy				= msg->easy_handle;
-    CURLcode res			= msg->data.result;
-    async_context* context	= NULL;
-    curl_easy_getinfo(easy, CURLINFO_PRIVATE, &context);
-    long http_result		= 0;
-    curl_easy_getinfo(easy, CURLINFO_RESPONSE_CODE, &http_result);
-    context->request->http_result	= http_result;
-    context->done					= true;
-    curl_multi_remove_handle(_multi, easy);
-    context->request->end_ts = std::chrono::steady_clock::now();
-
-    BOOST_LOG_TRIVIAL(debug) << "http_client::perform << http:" << to_string(context->request->action) << " " << context->request->uri << " res = " << http_result << " " << context->request->milliseconds() << " ms";
-    if (context->request->callback)
-    context->request->callback(0, context->request.get());
-    delete context;
-    }
-    }
-    }
-    */
-
+    
     void http_client::socket_rx_cb(const boost::system::error_code& e, boost::asio::ip::tcp::socket * tcp_socket, call_context::handle context)
     {
         if (!e && !context->_curl_done)
@@ -150,7 +115,7 @@ namespace csi
     }
 
     /*
-    *	user_data            : this set using                     curl_multi_setopt(_multi, CURLMOPT_SOCKETDATA, this);
+    *   user_data            : this set using                     curl_multi_setopt(_multi, CURLMOPT_SOCKETDATA, this);
     *   per_socket_user_data : async_context set on_connect using curl_multi_assign(_multi, ....
     */
     int http_client::_sock_cb(CURL *e, curl_socket_t s, int what, void *user_data, void* per_socket_user_data)
@@ -200,25 +165,25 @@ namespace csi
         {
         case CURL_POLL_REMOVE:
         {
-            //call_context* context = NULL;
-            //curl_easy_getinfo(e, CURLINFO_PRIVATE, &context);
-            long http_result = 0;
-            curl_easy_getinfo(e, CURLINFO_RESPONSE_CODE, &http_result);
-            context->_http_result = (csi::http::status_type) http_result;
-            context->_end_ts = std::chrono::steady_clock::now();
-            context->_curl_done = true;
-            context->_transport_ok = (http_result > 0);
+                                 //call_context* context = NULL;
+                                 //curl_easy_getinfo(e, CURLINFO_PRIVATE, &context);
+                                 long http_result = 0;
+                                 curl_easy_getinfo(e, CURLINFO_RESPONSE_CODE, &http_result);
+                                 context->_http_result = (csi::http::status_type) http_result;
+                                 context->_end_ts = std::chrono::steady_clock::now();
+                                 context->_curl_done = true;
+                                 context->_transport_ok = (http_result > 0);
 
-            BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_REMOVE << http:" << to_string(context->_method) << " " << context->uri() << " res = " << http_result << " " << context->milliseconds() << " ms";
-            call_context::handle h(context->curl_handle());
-            
-            if (context->_callback)
-                context->_callback(h);
+                                 BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_REMOVE << http:" << to_string(context->_method) << " " << context->uri() << " res = " << http_result << " " << context->milliseconds() << " ms";
+                                 call_context::handle h(context->curl_handle());
 
-            context->curl_stop();
-            curl_easy_setopt(context->_curl_easy, CURLOPT_PRIVATE, NULL);
+                                 if (context->_callback)
+                                     context->_callback(h);
 
-            _io_service.post(boost::bind(&http_client::_poll_remove, this, h));
+                                 context->curl_stop();
+                                 curl_easy_setopt(context->_curl_easy, CURLOPT_PRIVATE, NULL);
+
+                                 _io_service.post(boost::bind(&http_client::_poll_remove, this, h));
         }
             break;
 

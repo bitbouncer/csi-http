@@ -18,7 +18,7 @@ namespace csi
 {
     namespace http
     {
-        static http_parser_settings		s_parser_settings;
+        static http_parser_settings                s_parser_settings;
 
         void connection::init_parser_settings(http_parser_settings* ps)
         {

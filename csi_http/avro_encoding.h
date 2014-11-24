@@ -22,7 +22,7 @@ namespace csi
         avro::EncoderPtr e = avro::jsonEncoder()
             e->init(dst);
         avro::encode(*e, src);
-        // push back unused characters to the output stream again... really strange... 			
+        // push back unused characters to the output stream again... really strange...                         
         // otherwise content_length will be a multipple of 4096
         e->flush();
     }
@@ -43,7 +43,7 @@ namespace csi
         avro::EncoderPtr e = avro::binaryEncoder();
         e->init(dst);
         avro::encode(*e, src);
-        // push back unused characters to the output stream again... really strange... 			
+        // push back unused characters to the output stream again... really strange...                         
         // otherwise content_length will be a multipple of 4096
         e->flush();
     }

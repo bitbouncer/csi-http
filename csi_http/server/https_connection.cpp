@@ -54,7 +54,7 @@ namespace csi
         void https_connection::notify_async_reply_done()
         {
             //if (!_waiting_for_async_reply)
-            //	LOG_ERROR() << "ssl_session::notify_async_reply_done : NOT WAITING...";
+            //        LOG_ERROR() << "ssl_session::notify_async_reply_done : NOT WAITING...";
 
             //LOG_TRACE() << "ssl_session::notify_async_reply_done";
             boost::system::error_code ec;
@@ -228,7 +228,7 @@ namespace csi
         void https_connection::handle_async_call(const boost::system::error_code& e)
         {
             //if (!_waiting_for_async_reply)
-            //	LOG_ERROR() << "ssl_session::handle_async_call : NOT WAITING...";
+            //        LOG_ERROR() << "ssl_session::handle_async_call : NOT WAITING...";
 
             if (e == boost::asio::error::operation_aborted)
             {

@@ -46,25 +46,16 @@ namespace csi
             virtual void notify_async_reply_done();
 
         private:
-            /// Handle completion of a read operation.
             void handle_read(const boost::system::error_code& e, std::size_t bytes_transferred);
-
-            /// Handle completion of a write operation.
             void handle_write(const boost::system::error_code& e);
-
             void handle_timer(const boost::system::error_code& e);
-
             void handle_shutdown(const boost::system::error_code& e);
-
-            //void handle_async_call(const boost::system::error_code& e);
-
             void handle_async_reply_done();
 
             boost::asio::ip::tcp::socket _socket;
-            http_server*			           _server;
+            http_server*                 _server;
             boost::asio::deadline_timer  _connection_timeout_timer;
         };
-        //typedef boost::shared_ptr<http_connection> connection_ptr;
     } // namespace server
 } // namespace csi
 

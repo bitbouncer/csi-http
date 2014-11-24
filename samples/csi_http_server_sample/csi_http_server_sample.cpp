@@ -25,7 +25,7 @@ struct sample_data_req1
     sample_data_req1() : delay(0) {}
     std::string email;
     std::string phone;
-    uint64_t	delay;
+    uint64_t        delay;
 };
 
 bool json_decode(const json_spirit::Object& obj, sample_data_req1& sd)
@@ -101,7 +101,6 @@ public:
     /// Handle a request and produce a reply.
     virtual void handle_request(const std::string& rel_url, csi::http::connection* context)
     {
-        //const std::vector<header>&	headers = context->headers();
         if (context->request().method() == csi::http::POST)
         {
             std::shared_ptr<sample_data_req1> req1(new sample_data_req1());
@@ -140,10 +139,10 @@ int main(int argc, char** argv)
 
     try
     {
-        csi::http::io_service_pool	      io_pool(no_of_threads);
-        sample_service					          my_service(io_pool.get_io_service());
-        sample_request_handler			      my_request_handler(&my_service);
-        csi::http::http_server	          s1(my_address, port, &io_pool);
+        csi::http::io_service_pool io_pool(no_of_threads);
+        sample_service             my_service(io_pool.get_io_service());
+        sample_request_handler     my_request_handler(&my_service);
+        csi::http::http_server     s1(my_address, port, &io_pool);
         s1.add_request_handler("/rest/sample", &my_request_handler);
         io_pool.run();
     }
