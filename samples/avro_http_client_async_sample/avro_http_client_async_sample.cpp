@@ -11,27 +11,6 @@
 #include "../avro_defs/hello_world_request.h"
 #include "../avro_defs/hello_world_response.h"
 
-void handle_post(csi::http_client::call_context::handle request)
-{
-    if (request->ok())
-    {
-        sample::HelloWorldResponse response;
-        try
-        {
-            csi::avro_binary_decode<sample::HelloWorldResponse>(request->rx_content(), response);
-            //BOOST_LOG_TRIVIAL(info) << "handle_post " << request->uri() << " res " << request->http_result() << " actual delay=" << request->milliseconds() << " message = " << response.message;
-        }
-        catch (std::exception& e)
-        {
-            BOOST_LOG_TRIVIAL(error) << "handle_post " << request->uri() << " res " << request->http_result() << " actual delay=" << request->milliseconds() << " exception " << e.what();
-        }
-    }
-    else
-    {
-        BOOST_LOG_TRIVIAL(error) << "handle_post " << request->uri() << " transport_res = " << request->transport_result() << " http_res " << request->http_result();
-    }
-}
-
 int main(int argc, char **argv)
 {
     boost::asio::io_service io_service;
@@ -47,7 +26,28 @@ int main(int argc, char **argv)
             sample::HelloWorldRequest request;
             request.delay = 0;
             request.message = "nisse was here";
-            handler.perform_async(csi::create_avro_binary_rest("127.0.0.1:8090/rest/avro_sample", request, { "Content-Type:avro/binary", "Accept:avro/binary" }, std::chrono::milliseconds(1000)), std::bind(handle_post, std::placeholders::_1));
+            //handler.perform_async(csi::create_avro_binary_rest("127.0.0.1:8090/rest/avro_sample", request, { "Content-Type:avro/binary", "Accept:avro/binary" }, std::chrono::milliseconds(1000)), std::bind(handle_post, std::placeholders::_1));
+            handler.perform_async(
+                csi::create_avro_binary_rest(
+                "127.0.0.1:8090/rest/avro_sample",
+                request,
+                { "Content-Type:avro/binary", "Accept:avro/binary" },
+                std::chrono::milliseconds(1000)),
+                [](csi::http_client::call_context::handle request)
+            {
+                BOOST_LOG_TRIVIAL(info) << "handle_post " << request->uri() << " transport_res = " << request->transport_result() << " http_res " << request->http_result();
+                if (!request->ok())
+                    return;
+                try
+                {
+                    sample::HelloWorldResponse response;
+                    csi::avro_binary_decode<sample::HelloWorldResponse>(request->rx_content(), response);
+                }
+                catch (std::exception& e)
+                {
+                    BOOST_LOG_TRIVIAL(error) << "avro_binary_decode " << request->uri() << " res " << request->http_result() << " actual delay=" << request->milliseconds() << " exception " << e.what();
+                }
+            });
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }

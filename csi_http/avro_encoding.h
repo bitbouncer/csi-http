@@ -44,7 +44,7 @@ namespace csi
         e->init(dst);
         avro::encode(*e, src);
         // push back unused characters to the output stream again... really strange...                         
-        // otherwise content_length will be a multipple of 4096
+        // otherwise content_length will be a multiple of 4096
         e->flush();
     }
 

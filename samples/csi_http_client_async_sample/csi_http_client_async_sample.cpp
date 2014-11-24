@@ -1,8 +1,6 @@
 #include <stdio.h>
-
 #include <thread>
 #include <chrono>
-
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
@@ -18,7 +16,7 @@ struct sample_data_req1
     sample_data_req1() : delay(0) {}
     std::string email;
     std::string phone;
-    uint64_t        delay;
+    uint64_t    delay;
 };
 
 void json_encode(const sample_data_req1& sd, json_spirit::Object& obj)
@@ -66,7 +64,12 @@ int main(int argc, char **argv)
         payload.delay = 1;
 
         handler.perform_async(
-            create_json_spirit_request(csi::http::POST, "127.0.0.1:8090/rest/sample", payload, { "Content-Type:application/json", "Accept:application/json" }, std::chrono::milliseconds(1000)),
+            create_json_spirit_request(
+            csi::http::POST,
+            "127.0.0.1:8090/rest/sample",
+            payload,
+            { "Content-Type:application/json", "Accept:application/json" },
+            std::chrono::milliseconds(1000)),
             [&payload](csi::http_client::call_context::handle request)
         {
             BOOST_LOG_TRIVIAL(info) << "perform_async POST " << request->uri() << " res " << request->http_result() << " req delay=" << payload.delay << " actual delay=" << request->milliseconds();
