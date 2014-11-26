@@ -1,7 +1,7 @@
 csi-http
 ========
 
-async http client and server library written in C++ (11), builtin support for apache avro
+async http client and server library written in C++11, builtin support for apache avro
 - syncronous  client based on libcurl and boost ASIO
 - asyncronous client based on libcurl and boost ASIO
 - asyncronous high performance server based on Joyents http_parser and boost ASIO
