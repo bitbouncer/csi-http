@@ -41,7 +41,7 @@ int main(int argc, char **argv)
                 try
                 {
                     sample::HelloWorldResponse response;
-                    csi::avro_binary_decode<sample::HelloWorldResponse>(request->rx_content(), response);
+                    csi::avro_decode(request->rx_content(), response);
                 }
                 catch (std::exception& e)
                 {

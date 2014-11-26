@@ -179,10 +179,11 @@ namespace csi
     std::shared_ptr<http_client::call_context> create_avro_binary_rest(const std::string& uri, const Request& request, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout)
     {
         std::shared_ptr<http_client::call_context> p(new http_client::call_context(csi::http::POST, uri, headers, timeout));
-        avro_binary_encode(request, p->tx_content());
+        avro_encode(request, p->tx_content());
         return p;
     }
 
+    /*
     template<class Request>
     std::shared_ptr<http_client::call_context> create_avro_json_rest(const std::string& uri, const Request& request, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout)
     {
@@ -190,6 +191,7 @@ namespace csi
         avro_json_encode(request, p->tx_content());
         return p;
     }
+    */
 
     inline std::shared_ptr<http_client::call_context> create_http_request(csi::http::method_t method, const std::string& uri, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout)
     {

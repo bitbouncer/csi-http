@@ -29,7 +29,7 @@ void make_calls()
             try
             {
                 sample::HelloWorldResponse response;
-                csi::avro_binary_decode<sample::HelloWorldResponse>(result->rx_content(), response);
+                csi::avro_decode(result->rx_content(), response);
                 BOOST_LOG_TRIVIAL(info) << response.message << " (" << result->rx_content_length() << " bytes) call time " << result->milliseconds() << " ms";
             }
             catch (std::exception& e)
