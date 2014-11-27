@@ -29,6 +29,7 @@ sudo apt-get install -y automake autogen shtool libtool git wget cmake unzip bui
 
 Get nessessary dependencies and build
 ```
+sudo ls
 mkdir source
 cd source
 git clone https://github.com/bitbouncer/csi-build-scripts.git
