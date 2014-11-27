@@ -35,7 +35,7 @@ git clone https://github.com/bitbouncer/csi-build-scripts.git
 bash csi-build-scripts/ubuntu14_setup.sh
 ```
 
-Raspberry Pi - cross compiling on ubuntu 32
+Raspberry Pi - cross compiling on ubuntu14/64
 
 Install build tools
 ```
