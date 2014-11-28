@@ -19,7 +19,7 @@ Platforms:
  - Linux, GCC
  - Raspberry Pi, GCC
 
-Ubuntu 14 x64:
+### Ubuntu 14 x64:
 
 Install build tools
 ```
@@ -36,7 +36,7 @@ git clone https://github.com/bitbouncer/csi-build-scripts.git
 bash csi-build-scripts/ubuntu14_setup.sh
 ```
 
-Raspberry Pi - cross compiling on ubuntu14 x32
+### Raspberry Pi - cross compiling on ubuntu14 x32
 
 Install build tools
 ```
@@ -59,7 +59,7 @@ git clone https://github.com/bitbouncer/csi-build-scripts.git
 bash csi-build-scripts/raspbian_ubuntu32_setup.sh
 ```
 
-Windows x64 - Visual Studio 12
+### Windows x64 - Visual Studio 12
 
 Get and build nessessary dependencies
 ```
