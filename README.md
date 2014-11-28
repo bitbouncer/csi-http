@@ -36,20 +36,30 @@ git clone https://github.com/bitbouncer/csi-build-scripts.git
 bash csi-build-scripts/ubuntu14_setup.sh
 ```
 
-Raspberry Pi - cross compiling on ubuntu14/64
+Raspberry Pi - cross compiling on ubuntu14/32
 
 Install build tools
 ```
-sudo apt-get install cmake wget unzip cmake wget wput libpcre3 libpcre3-dev build-essential git
-
+sudo apt-get -y install cmake wget unzip cmake wget wput libpcre3 libpcre3-dev build-essential git subversion 
 mkdir -p ~/xtools
 cd ~/xtools
-echo "export PATH=~/xtools/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin:\$PATH" >> ~/.bashrc
-source ~/.bashrc
 git clone https://github.com/raspberrypi/tools.git --depth 1
+cd ..
+echo "export PATH=~/xtools/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin:\$PATH" >> ~/.bashrc
+source ~/.bashrc
+
+
 ```
-Get nessessary dependencies 
+Get nessessary dependencies - actually we get more that nessessary (V8 javascript engine as well)
 ```
+sudo ls
+mkdir raspbian_bitbouncer
+cd raspbian_bitbouncer
+git clone https://github.com/bitbouncer/csi-build-scripts.git
+bash csi-build-scripts/raspbian_ubuntu32_setup.sh
+
+
+
 export BOOST_VERSION=1_55_0
 export BOOST_VERSION_DOTTED=1.55.0
 export AVRO_VERSION=1.7.7
