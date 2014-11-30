@@ -98,11 +98,11 @@ namespace csi
             inline std::auto_ptr<avro::InputStream> rx_content() const { return avro::memoryInputStream(rx_buffer()); }
 
         private:
-            csi::http::method_t                                                    _method;
-            std::string                                                                    _uri;
-            std::vector<std::string>                                _tx_headers;
-            std::vector<std::string>                                    _rx_headers;
-            bool                                                                            _verbose;                        // degug only
+            csi::http::method_t                   _method;
+            std::string                           _uri;
+            std::vector<std::string>              _tx_headers;
+            std::vector<std::string>              _rx_headers;
+            bool                                  _verbose;// degug only
             std::chrono::steady_clock::time_point _start_ts;
             std::chrono::steady_clock::time_point _end_ts;
             std::chrono::milliseconds             _timeoutX;
