@@ -139,12 +139,12 @@ int main(int argc, char** argv)
 
     try
     {
-        csi::http::io_service_pool io_pool(no_of_threads);
-        sample_service             my_service(io_pool.get_io_service());
+        boost::asio::io_service    ios;
+        sample_service             my_service(ios);
         sample_request_handler     my_request_handler(&my_service);
-        csi::http::http_server     s1(my_address, port, &io_pool);
+        csi::http::http_server     s1(ios, my_address, port);
         s1.add_request_handler("/rest/sample", &my_request_handler);
-        io_pool.run();
+        ios.run();
     }
     catch (std::exception& e)
     {

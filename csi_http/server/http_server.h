@@ -15,9 +15,8 @@
 #include <vector>
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
-
+#include <boost/asio.hpp>
 #include "http_connection.h"
-#include "io_service_pool.h"
 #include "server.h"
 
 namespace csi
@@ -29,21 +28,18 @@ namespace csi
         {
         public:
             /// Construct the server to listen on the specified TCP address and port
-            http_server(const std::string& address, int port, io_service_pool* pool, const std::string& request_id_header = "request_id");
-
-            http_server(int port, io_service_pool* pool, const std::string& request_id_header = "request_id");
+            http_server(boost::asio::io_service& ios, const std::string& address, int port, const std::string& request_id_header = "request_id");
+            http_server(boost::asio::io_service& ios, int port, const std::string& request_id_header = "request_id");
 
             /// Run the server's io_service loop.
-            void run();
-
+            //void run();
             /// Stop the server.
-            void stop();
+            //void stop();
         private:
             /// Handle completion of an asynchronous accept operation.
             void handle_accept(const boost::system::error_code& e);
 
-            /// The pool of io_service objects used to perform asynchronous operations.
-            io_service_pool&                    _io_service_pool;
+            boost::asio::io_service&            _ios;
             /// Acceptor used to listen for incoming connections.
             boost::asio::ip::tcp::acceptor      _acceptor;
             /// The next connection to be accepted.

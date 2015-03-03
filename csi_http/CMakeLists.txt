@@ -13,8 +13,6 @@ SET(LIB_SRCS
 	server/file_request_handler.cpp
 	server/file_request_handler.h
 	server/header.h
-	server/io_service_pool.h
-	server/io_service_pool.cpp
 	server/reply.h
 	server/reply.cpp
 	server/request.h
