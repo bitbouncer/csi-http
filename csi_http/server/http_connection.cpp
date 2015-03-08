@@ -54,7 +54,14 @@ namespace csi
 
         void http_connection::send_reply()
         {
-            BOOST_LOG_TRIVIAL(debug) << "unsecure_connection::send_reply";
+            if (reply().status() < 200 || reply().status() >= 300)
+            {
+                BOOST_LOG_TRIVIAL(error) << "http_connection::send_reply: " << to_string(request().method()) << " " << request().url() << " , status : " << reply().status() << ", " << to_string(reply().status());
+            }
+            else
+            {
+                BOOST_LOG_TRIVIAL(info) << "http_connection::send_reply: content_length:" << reply().content_length() << ", status:" << reply().status() << ", " << to_string(reply().status());
+            }
             _waiting_for_async_reply = false;
 
             if (!keep_alive())
@@ -73,7 +80,7 @@ namespace csi
 
         void http_connection::notify_async_reply_done()
         {
-            BOOST_LOG_TRIVIAL(debug) << "unsecure_connection::notify_async_reply_done";
+            BOOST_LOG_TRIVIAL(debug) << "http_connection::notify_async_reply_done";
             _io_service.post(boost::bind(&http_connection::handle_async_reply_done, shared_from_this()));
         }
 
