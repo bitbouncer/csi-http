@@ -114,9 +114,9 @@ namespace csi {
             buffers.push_back(boost::asio::buffer(http_version_strings::v1_1));
             buffers.push_back(status_strings::to_buffer(status()));
 
-            for (std::size_t i = 0; i < headers.size(); ++i)
+            for (std::size_t i = 0; i < _headers.size(); ++i)
             {
-                header& h = headers[i];
+                header_t& h = _headers[i];
                 buffers.push_back(boost::asio::buffer(h.name));
                 buffers.push_back(boost::asio::buffer(misc_strings::name_value_separator));
                 buffers.push_back(boost::asio::buffer(h.value));
@@ -284,26 +284,31 @@ namespace csi {
 
             if (sz == 0)
             {
-                headers.resize(1 + extra_headers);
+                _headers.resize(1 + extra_headers);
                 //contentX = stock_replies::to_string(_status); if we do this then the size is not 0....
-                headers[extra_headers + 0].name = "Content-Length";
-                headers[extra_headers + 0].value = "0";
+                _headers[extra_headers + 0].name = "Content-Length";
+                _headers[extra_headers + 0].value = "0";
             }
             else
             {
                 char content_length[32];
                 sprintf(content_length, "%d", (int)sz);
-                headers.resize(2 + extra_headers);
-                headers[extra_headers + 0].name = "Content-Length";
-                headers[extra_headers + 0].value = content_length;
-                headers[extra_headers + 1].name = "Content-Type";
-                headers[extra_headers + 1].value = content_type;
+                _headers.resize(2 + extra_headers);
+                _headers[extra_headers + 0].name = "Content-Length";
+                _headers[extra_headers + 0].value = content_length;
+                _headers[extra_headers + 1].name = "Content-Type";
+                _headers[extra_headers + 1].value = content_type;
             }
+        }
+
+        void  reply_t::add(const header_t& h)
+        {
+            _headers.push_back(h);
         }
 
         void reply_t::reset()
         {
-            headers.resize(0);
+            _headers.resize(0);
             _avro_tx_buffer = avro::memoryOutputStream();
             _boost_tx_buffer.reset();
         }

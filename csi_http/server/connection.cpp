@@ -78,7 +78,7 @@ namespace csi
             {
                 // look and see if we have one in header field
                 bool found = false;
-                for (std::vector<header>::const_iterator i = _request._headers.begin(); i != _request._headers.end(); ++i)
+                for (std::vector<header_t>::const_iterator i = _request._headers.begin(); i != _request._headers.end(); ++i)
                 {
                     if (((*i).name == _request_id_header_tag))
                     {
@@ -136,7 +136,7 @@ namespace csi
                 // add current key/value to headers i request
                 boost::algorithm::to_lower(c->_current_header_key);
                 boost::algorithm::to_lower(c->_current_header_val);
-                c->_request._headers.push_back(header(c->_current_header_key, c->_current_header_val));
+                c->_request._headers.push_back(header_t(c->_current_header_key, c->_current_header_val));
                 c->_current_header_key[0] = 0; // not needed
                 c->_current_header_val[0] = 0; // not needed
                 c->_current_header_key_len = 0;
@@ -177,7 +177,7 @@ namespace csi
             {
                 boost::algorithm::to_lower(c->_current_header_key);
                 boost::algorithm::to_lower(c->_current_header_val);
-                c->_request._headers.push_back(header(c->_current_header_key, c->_current_header_val));
+                c->_request._headers.push_back(header_t(c->_current_header_key, c->_current_header_val));
                 c->_current_header_key[0] = 0; // not needed
                 c->_current_header_val[0] = 0; // not needed
                 c->_current_header_key_len = 0;

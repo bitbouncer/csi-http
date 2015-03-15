@@ -16,6 +16,7 @@ SET(LIB_SRCS
 	server/reply.h
 	server/reply.cpp
 	server/request.h
+    server/request.cpp
 	server/request_handler.h
 	server/server.h
 	server/server.cpp

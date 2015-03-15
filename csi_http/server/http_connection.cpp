@@ -65,7 +65,7 @@ namespace csi
             _waiting_for_async_reply = false;
 
             if (!keep_alive())
-                reply().headers.push_back(header("Connection", "close"));
+                reply().add(header_t("Connection", "close"));
 
             boost::asio::async_write(_socket, reply().to_buffers(), boost::bind(&http_connection::handle_write, shared_from_this(), boost::asio::placeholders::error));
         }

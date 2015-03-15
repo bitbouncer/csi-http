@@ -8,16 +8,15 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 #pragma once
-
 #include <string>
-
-namespace csi {
-    namespace http {
-
-        struct header
+namespace csi
+{
+    namespace http
+    {
+        struct header_t
         {
-            header() {}
-            header(const std::string& n, const std::string& v) : name(n), value(v) {}
+            header_t() {}
+            header_t(const std::string& n, const std::string& v) : name(n), value(v) {}
             std::string name;
             std::string value;
         };
