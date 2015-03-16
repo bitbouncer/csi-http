@@ -6,10 +6,10 @@ async http client and server library written in C++11, builtin support for apach
 - asyncronous client based on libcurl and boost ASIO
 - asyncronous high performance server based on Joyents http_parser and boost ASIO
 - generic GET, PUT, POST
-- REST calls using avro binary encoded payloads
-- REST calls using json encoded payloads (with optional json-spirit library)
+- REST calls using avro binary and json encoded payloads (using POST)
+- REST calls using "generic" json encoded payloads (with optional json-spirit library)
 - HTTP 1.1, specifically supports connection:keep-alive
-- tentative support for HTTPS using OpenSSL
+- support for HTTPS using OpenSSL
  
 Missing:
 - no support for avro rpc (REST calls with avro payload supported)
