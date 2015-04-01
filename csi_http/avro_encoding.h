@@ -11,6 +11,8 @@
 #include <avro/Encoder.hh>
 #include <avro/Decoder.hh>
 
+#pragma once
+
 namespace csi
 {
     template<class T>
