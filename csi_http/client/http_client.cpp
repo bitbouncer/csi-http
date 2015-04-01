@@ -126,7 +126,7 @@ namespace csi
     // must not be called within curl callbacks - post a asio message instead
     void http_client::_poll_remove(call_context::handle h)
     {
-        BOOST_LOG_TRIVIAL(debug) << "curl_multi_remove_handle cleanup";
+        BOOST_LOG_TRIVIAL(debug) << "http_client::_poll_remove: " << h->_curl_easy;
         curl_multi_remove_handle(_multi, h->_curl_easy);
     }
 
@@ -174,7 +174,7 @@ namespace csi
                                  context->_curl_done = true;
                                  context->_transport_ok = (http_result > 0);
 
-                                 BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_REMOVE << http:" << to_string(context->_method) << " " << context->uri() << " res = " << http_result << " " << context->milliseconds() << " ms";
+                                 BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_REMOVE: " << s << " http:" << to_string(context->_method) << " " << context->uri() << " res = " << http_result << " " << context->milliseconds() << " ms";
                                  call_context::handle h(context->curl_handle());
 
                                  if (context->_callback)
@@ -188,15 +188,15 @@ namespace csi
             break;
 
         case CURL_POLL_IN:
-            BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_IN";
+            BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_IN: " << s;
             tcp_socket->async_read_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_rx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             break;
         case CURL_POLL_OUT:
-            BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_OUT";
+            BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_OUT: " << s;
             tcp_socket->async_write_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_tx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             break;
         case CURL_POLL_INOUT:
-            BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_INOUT";
+            BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_INOUT: " << s;
             tcp_socket->async_read_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_rx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             tcp_socket->async_write_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_tx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             break;
@@ -268,14 +268,17 @@ namespace csi
     }
 
     /* Called from asio a bit later than above */
-    void http_client::_asio_closesocket_cb(curl_socket_t item)
+    void http_client::_asio_closesocket_cb(curl_socket_t s)
     {
-        BOOST_LOG_TRIVIAL(debug) << "http_client::_asio_closesocket_cb : " << item;
+        BOOST_LOG_TRIVIAL(debug) << "http_client::_asio_closesocket_cb : " << s;
         {
             csi::spinlock::scoped_lock xxx(_spinlock);
-            std::map<curl_socket_t, boost::asio::ip::tcp::socket*>::iterator it = _socket_map.find(item);
+            std::map<curl_socket_t, boost::asio::ip::tcp::socket*>::iterator it = _socket_map.find(s);
             if (it != _socket_map.end())
             {
+                // we seems to get back a CURL_POLL_INOUT on dead socket sometimes - only when timeouting connections 
+                // this will cause it to detected as a c-ares socket and exit (harmlesss)
+                curl_multi_assign(_multi, s, NULL); 
                 delete it->second;
                 _socket_map.erase(it);
             }
