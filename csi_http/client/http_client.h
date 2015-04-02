@@ -14,6 +14,7 @@
 #include <boost/chrono/system_clocks.hpp>
 #include <boost/function.hpp>
 #include <avro/Specific.hh>
+#include <avro/Schema.hh>
 #include <csi_http/csi_http.h>
 #include <csi_http/spinlock.h>
 #include <csi_http/avro_encoding.h>
@@ -183,15 +184,13 @@ namespace csi
         return p;
     }
 
-    /*
     template<class Request>
-    std::shared_ptr<http_client::call_context> create_avro_json_rest(const std::string& uri, const Request& request, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout)
+    std::shared_ptr<http_client::call_context> create_avro_json_rest(const std::string& uri, const Request& request, const avro::ValidSchema& schema, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout)
     {
         std::shared_ptr<http_client::call_context> p(new http_client::call_context(csi::http::POST, uri, headers, timeout));
-        avro_json_encode(request, p->tx_content());
+        avro_json_encode(request, schema, p->tx_content());
         return p;
     }
-    */
 
     inline std::shared_ptr<http_client::call_context> create_http_request(csi::http::method_t method, const std::string& uri, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout)
     {
