@@ -17,7 +17,7 @@
 #include <avro/Schema.hh>
 #include <csi_http/csi_http.h>
 #include <csi_http/spinlock.h>
-#include <csi_http/avro_encoding.h>
+#include <csi_avro/encoding.h>
 
 #pragma once
 
