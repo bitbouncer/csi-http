@@ -26,12 +26,11 @@ int main(int argc, char **argv)
             sample::HelloWorldRequest request;
             request.delay = 0;
             request.message = "nisse was here";
-            //handler.perform_async(csi::create_avro_binary_rest("127.0.0.1:8090/rest/avro_sample", request, { "Content-Type:avro/binary", "Accept:avro/binary" }, std::chrono::milliseconds(1000)), std::bind(handle_post, std::placeholders::_1));
             handler.perform_async(
-                csi::create_avro_binary_rest(
+                csi::create_avro_json_rest(
                 "127.0.0.1:8090/rest/avro_sample",
                 request,
-                { "Content-Type:avro/binary", "Accept:avro/binary" },
+                { "Content-Type:avro/json", "Accept:avro/json" },
                 std::chrono::milliseconds(1000)),
                 [](csi::http_client::call_context::handle request)
             {
@@ -41,11 +40,11 @@ int main(int argc, char **argv)
                 try
                 {
                     sample::HelloWorldResponse response;
-                    csi::avro_decode(request->rx_content(), response);
+                    csi::avro_json_decode(request->rx_content(), response);
                 }
                 catch (std::exception& e)
                 {
-                    BOOST_LOG_TRIVIAL(error) << "avro_binary_decode " << request->uri() << " res " << request->http_result() << " actual delay=" << request->milliseconds() << " exception " << e.what();
+                    BOOST_LOG_TRIVIAL(error) << "avro_json_decode " << request->uri() << " res " << request->http_result() << " actual delay=" << request->milliseconds() << " exception " << e.what();
                 }
             });
         }

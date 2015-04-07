@@ -11,6 +11,7 @@
 #include <vector>
 #include "header.h"
 #include <avro/Specific.hh>
+#include <boost/uuid/uuid.hpp>
 #include <csi_http/csi_http.h>
 
 namespace csi
@@ -45,11 +46,17 @@ namespace csi
             inline const std::string& url() const                   { return _url; }
             inline const std::string& query() const                 { return _query; }
             std::string get_header(const std::string& header) const;
-
+            
+            // keeps existing string or existing or creates a new uuid in not existing
+            const std::string&        request_id  (const std::string& request_id_header = "request_id") const;
+            // keeps existing uuid or creates a new if not existing (overwrites existing string if not uuid)
+            const boost::uuids::uuid& request_uuid(const std::string& request_id_header = "request_id") const;
 
             csi::http::method_t                _method;
             std::string                        _url;
             std::string                        _query;
+            mutable std::string                _request_id; // from client or autogen if empty 
+            mutable boost::uuids::uuid         _request_uuid;
             std::vector<header_t>              _headers;
             size_t                             _content_length;
             std::auto_ptr<avro::OutputStream>  _avro_rx_buffer;

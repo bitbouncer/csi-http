@@ -32,18 +32,18 @@ int main(int argc, char **argv)
         sample::HelloWorldRequest request;
         request.message = "greeting to you!";
         request.delay = 0;
-        auto result = handler.perform(csi::create_avro_binary_rest("127.0.0.1:8090/rest/avro_sample", request, { "Content-Type:avro/binary", "Accept:avro/binary" }, std::chrono::milliseconds(1000)));
+        auto result = handler.perform(csi::create_avro_json_rest("127.0.0.1:8090/rest/avro_sample", request, { "Content-Type:avro/json", "Accept:avro/json" }, std::chrono::milliseconds(1000)));
         if (result->ok())
         {
             try
             {
                 sample::HelloWorldResponse response;
-                csi::avro_decode(result->rx_content(), response);
+                csi::avro_json_decode(result->rx_content(), response);
                 BOOST_LOG_TRIVIAL(info) << response.message << " (" << result->rx_content_length() << " bytes) call time " << result->milliseconds() << " ms";
             }
             catch (std::exception& e)
             {
-                BOOST_LOG_TRIVIAL(error) << "csi::avro_binary_decode<sample::HelloWorldResponse> " << e.what();
+                BOOST_LOG_TRIVIAL(error) << "csi::avro_json_decode<sample::HelloWorldResponse> " << e.what();
             }
         }
         else

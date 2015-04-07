@@ -34,7 +34,7 @@ namespace csi
 
             inline const request_t& request() const { return _request; }
             inline reply_t&         reply()         { return _reply; }
-            const std::string&      request_id() const;
+            //const std::string&      request_id() const;
             inline bool             waiting_for_reply() const   { return _waiting_for_async_reply; }
             size_t                  http_parse(const char* at, size_t len);
             static void             init_parser_settings(http_parser_settings* ps);

@@ -72,6 +72,7 @@ namespace csi
         }
 
 
+        /*
         const std::string& connection::request_id() const
         {
             if (_request_id.size() == 0)
@@ -97,6 +98,7 @@ namespace csi
 
             return _request_id;
         }
+        */
 
         int connection::on_message_begin(http_parser* parser)
         {

@@ -23,9 +23,12 @@
 
 #include <sstream>
 #include "boost/any.hpp"
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/string_generator.hpp>
 #include "avro/Specific.hh"
 #include "avro/Encoder.hh"
 #include "avro/Decoder.hh"
+#include "avro/Compiler.hh"
 
 namespace sample {
 struct HelloWorldResponse {
@@ -33,6 +36,10 @@ struct HelloWorldResponse {
     HelloWorldResponse() :
         message(std::string())
         { }
+//  avro extension
+    static inline const boost::uuids::uuid schema_hash()      { static const boost::uuids::uuid _hash(boost::uuids::string_generator()("17935488-5d2c-880f-1a67-1fee58935b84")); return _hash; }
+    static inline const char*              schema_as_string() { return "{\"type\":\"record\",\"namespace\":\"se.csi.sample\",\"name\":\"HelloWorldResponse\",\"fields\":[{\"name\":\"message\",\"type\":\"string\"}]}"; } 
+    static const avro::ValidSchema         valid_schema()     { static const avro::ValidSchema _validSchema(avro::compileJsonSchemaFromString(schema_as_string())); return _validSchema; }
 };
 
 }
@@ -42,7 +49,22 @@ template<> struct codec_traits<sample::HelloWorldResponse> {
         avro::encode(e, v.message);
     }
     static void decode(Decoder& d, sample::HelloWorldResponse& v) {
-        avro::decode(d, v.message);
+        if (avro::ResolvingDecoder *rd =
+            dynamic_cast<avro::ResolvingDecoder *>(&d)) {
+            const std::vector<size_t> fo = rd->fieldOrder();
+            for (std::vector<size_t>::const_iterator it = fo.begin();
+                it != fo.end(); ++it) {
+                switch (*it) {
+                case 0:
+                    avro::decode(d, v.message);
+                    break;
+                default:
+                    break;
+                }
+            }
+        } else {
+            avro::decode(d, v.message);
+        }
     }
 };
 

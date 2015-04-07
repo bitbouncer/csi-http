@@ -20,6 +20,8 @@
 #include "../avro_defs/hello_world_request.h"
 #include "../avro_defs/hello_world_response.h"
 
+
+
 class sample_service
 {
     typedef boost::asio::basic_waitable_timer<boost::chrono::steady_clock> timer;
@@ -41,7 +43,7 @@ private:
         BOOST_LOG_TRIVIAL(info) << "done and returning ok  ";
         sample::HelloWorldResponse resp;
         resp.message = "hello to you!";
-        csi::avro_encode(resp, context->reply().content());
+        csi::avro_json_encode(resp, context->reply().content());
         context->reply().create(csi::http::ok);
         context->notify_async_reply_done();
     }
@@ -61,12 +63,12 @@ public:
         if (context->request().method() == csi::http::POST)
         {
             std::shared_ptr<sample::HelloWorldRequest> request(new sample::HelloWorldRequest());
-            csi::avro_decode(context->request().content(), *request);
+            csi::avro_json_decode(context->request().content(), *request);
             if (request->delay == 0)
             {
                 sample::HelloWorldResponse response;
                 response.message = request->message;
-                csi::avro_encode(response, context->reply().content());
+                csi::avro_binary_encode(response, context->reply().content());
                 context->reply().create(csi::http::ok);
             }
             else

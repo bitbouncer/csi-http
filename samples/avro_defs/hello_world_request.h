@@ -23,9 +23,12 @@
 
 #include <sstream>
 #include "boost/any.hpp"
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/string_generator.hpp>
 #include "avro/Specific.hh"
 #include "avro/Encoder.hh"
 #include "avro/Decoder.hh"
+#include "avro/Compiler.hh"
 
 namespace sample {
 struct HelloWorldRequest {
@@ -35,6 +38,10 @@ struct HelloWorldRequest {
         message(std::string()),
         delay(int64_t())
         { }
+//  avro extension
+    static inline const boost::uuids::uuid schema_hash()      { static const boost::uuids::uuid _hash(boost::uuids::string_generator()("0bed4ca8-4a37-6795-ead4-bdd301277868")); return _hash; }
+    static inline const char*              schema_as_string() { return "{\"type\":\"record\",\"namespace\":\"se.csi.sample\",\"name\":\"HelloWorldRequest\",\"fields\":[{\"name\":\"message\",\"type\":\"string\"},{\"name\":\"delay\",\"type\":\"long\"}]}"; } 
+    static const avro::ValidSchema         valid_schema()     { static const avro::ValidSchema _validSchema(avro::compileJsonSchemaFromString(schema_as_string())); return _validSchema; }
 };
 
 }
@@ -45,8 +52,26 @@ template<> struct codec_traits<sample::HelloWorldRequest> {
         avro::encode(e, v.delay);
     }
     static void decode(Decoder& d, sample::HelloWorldRequest& v) {
-        avro::decode(d, v.message);
-        avro::decode(d, v.delay);
+        if (avro::ResolvingDecoder *rd =
+            dynamic_cast<avro::ResolvingDecoder *>(&d)) {
+            const std::vector<size_t> fo = rd->fieldOrder();
+            for (std::vector<size_t>::const_iterator it = fo.begin();
+                it != fo.end(); ++it) {
+                switch (*it) {
+                case 0:
+                    avro::decode(d, v.message);
+                    break;
+                case 1:
+                    avro::decode(d, v.delay);
+                    break;
+                default:
+                    break;
+                }
+            }
+        } else {
+            avro::decode(d, v.message);
+            avro::decode(d, v.delay);
+        }
     }
 };
 
