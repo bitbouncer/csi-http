@@ -1,7 +1,7 @@
 csi-http
 ========
 
-async http client and server library written in C++11, builtin support for apache avro
+async http client and server library written in C++11, builtin support for Apache Avro encoding
 - syncronous  client based on libcurl and boost ASIO
 - asyncronous client based on libcurl and boost ASIO
 - asyncronous high performance server based on Joyents http_parser and boost ASIO
@@ -19,57 +19,11 @@ Platforms:
  - Linux, GCC
  - Raspberry Pi, GCC
 
-### Ubuntu 14 x64:
 
-Install build tools
-```
-sudo apt-get install -y automake autogen shtool libtool git wget cmake unzip build-essential g++ python-dev autotools-dev libicu-dev zlib1g-dev openssl libssl-dev libcurl4-openssl-dev libbz2-dev libcurl3 libboost-all-dev
+Building
+see
+https://github.com/bitbouncer/csi-build-scripts
 
-```
-
-Get and build nessessary dependencies
-```
-sudo ls
-mkdir source
-cd source
-git clone https://github.com/bitbouncer/csi-build-scripts.git
-bash csi-build-scripts/ubuntu14_setup.sh
-```
-
-### Raspberry Pi - cross compiling on ubuntu14 x32
-
-Install build tools
-```
-sudo apt-get -y install cmake wget unzip cmake wget wput libpcre3 libpcre3-dev build-essential git subversion 
-mkdir -p ~/xtools
-cd ~/xtools
-git clone https://github.com/raspberrypi/tools.git --depth 1
-cd ..
-echo "export PATH=~/xtools/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin:\$PATH" >> ~/.bashrc
-source ~/.bashrc
-
-
-```
-Get and build nessessary dependencies 
-```
-sudo ls
-mkdir raspbian_bitbouncer
-cd raspbian_bitbouncer
-git clone https://github.com/bitbouncer/csi-build-scripts.git
-bash csi-build-scripts/raspbian_ubuntu32_setup.sh
-```
-
-### Windows x64 - Visual Studio 12
-
-Get and build nessessary dependencies
-```
-Install Visual Studio, nasm, git and active perl, make sure active perl is before git in PATH
-
-mkdir source
-cd source
-git clone https://github.com/bitbouncer/csi-build-scripts.git
-csi-build-scripts\windows_x64_vc12_setup.bat
-```
 
 License:
 - Boost Software License, Version 1.0.
