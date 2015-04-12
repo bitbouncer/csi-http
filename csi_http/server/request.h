@@ -22,17 +22,9 @@ namespace csi
         class request_t : public boost::noncopyable
         {
         public:
-            request_t() { reset(); }
+            request_t();
 
-            void reset()
-            {
-                _content_length = 0;
-                _url.clear();
-                _query.clear();
-                _headers.clear();
-                _avro_rx_buffer = avro::memoryOutputStream();
-                _avro_rx_buffer_stream_writer = std::auto_ptr<avro::StreamWriter>(new avro::StreamWriter(*_avro_rx_buffer));
-            }
+            void reset();
 
             inline size_t content_length() const 
             {
