@@ -337,7 +337,7 @@ namespace csi
 
     void http_client::_perform(call_context::handle request)
     {
-        request->curl_start(request); // increments usage count and kjeeps object around untilk curl thinks its done.
+        request->curl_start(request); // increments usage count and keeps object around until curl thinks its done.
 
         //ugly init of avro memory stream that seems to take a snapshot of what's in the buffer att creation time
         request->_avro_tx_stream = avro::memoryInputStream(*request->_avro_tx_buffer.get());

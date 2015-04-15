@@ -54,19 +54,10 @@ namespace csi
 
         void http_connection::send_reply()
         {
-            if (reply().status() < 200 || reply().status() >= 300)
-            {
-                BOOST_LOG_TRIVIAL(error) << "http_connection::send_reply: " << to_string(request().method()) << " " << request().url() << " , status : " << reply().status() << ", " << to_string(reply().status());
-            }
-            else
-            {
-                BOOST_LOG_TRIVIAL(info) << "http_connection::send_reply: content_length:" << reply().content_length() << ", status:" << reply().status() << ", " << to_string(reply().status());
-            }
+            BOOST_LOG_TRIVIAL(info) << "HTTP REQUEST END " << request().request_id() << ", " << to_string(socket().remote_endpoint()) << ", " << to_string(request().method()) << " " << request().url() << " duration " << total_microseconds() << ", status : " << reply().status() << ", " << to_string(reply().status());
             _waiting_for_async_reply = false;
-
             if (!keep_alive())
                 reply().add(header_t("Connection", "close"));
-
             boost::asio::async_write(_socket, reply().to_buffers(), boost::bind(&http_connection::handle_write, shared_from_this(), boost::asio::placeholders::error));
         }
 
@@ -113,7 +104,9 @@ namespace csi
 
                 if (request_complete())
                 {
-                    _server->handle_request(this);
+                    _request_start = boost::posix_time::microsec_clock::universal_time();
+                    BOOST_LOG_TRIVIAL(info) << "HTTP REQUEST BEGIN " << request().request_id() << ", " << to_string(socket().remote_endpoint()) << ", " << to_string(request().method()) << " " << request().url();
+                    _server->handle_request(shared_from_this());
                     if (_waiting_for_async_reply)
                     {
                         //connection_timeout_timer_.expires_from_now(std::chrono::seconds(300)); // wait very long since we cant be dead when async call returns
@@ -123,6 +116,7 @@ namespace csi
                     else
                     {
                         send_reply();
+                        // time session id, duration, status, uri, remote ip
                     }
                 }
                 else

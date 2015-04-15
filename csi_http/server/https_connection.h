@@ -10,22 +10,20 @@
 //
 
 #pragma once
-
+#include <memory>
 #include <boost/asio.hpp>
 #include <boost/asio/ssl.hpp>
 #include <boost/array.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "connection.h"
-#include "request_handler.h"
 
 namespace csi
 {
     namespace http
     {
         class https_server;
-        class https_connection : public connection, public boost::enable_shared_from_this<https_connection>
+        class https_connection : public connection, public std::enable_shared_from_this<https_connection>
         {
         public:
             typedef boost::asio::ssl::stream<boost::asio::ip::tcp::socket> ssl_socket;
@@ -46,9 +44,12 @@ namespace csi
             void handle_async_call(const boost::system::error_code& e);
             void handle_shutdown(const boost::system::error_code& e);
 
+            inline uint32_t total_microseconds() { return ((uint32_t) (boost::posix_time::microsec_clock::universal_time() - _request_start).total_microseconds()); }
+
             ssl_socket                  _socket;
             https_server*               _server;
             boost::asio::deadline_timer _timer;
+            boost::posix_time::ptime    _request_start;
         };
     };
 };

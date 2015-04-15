@@ -71,35 +71,6 @@ namespace csi
             return http_parser_execute(&_parser, &s_parser_settings, buf, len);
         }
 
-
-        /*
-        const std::string& connection::request_id() const
-        {
-            if (_request_id.size() == 0)
-            {
-                // look and see if we have one in header field
-                bool found = false;
-                for (std::vector<header_t>::const_iterator i = _request._headers.begin(); i != _request._headers.end(); ++i)
-                {
-                    if (((*i).name == _request_id_header_tag))
-                    {
-                        _request_id = (*i).value;
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    boost::uuids::basic_random_generator<boost::mt19937> gen;
-                    _request_id = boost::lexical_cast<std::string>(gen());
-                }
-            }
-
-            return _request_id;
-        }
-        */
-
         int connection::on_message_begin(http_parser* parser)
         {
             connection* c = (connection*)parser->data;

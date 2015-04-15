@@ -9,15 +9,14 @@
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 #pragma once
-
+#include <memory>
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
+
 #include <boost/lexical_cast.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <csi_http/server/connection.h>
-#include "request_handler.h"
 #include <http_parser.h>
 
 namespace csi
@@ -27,7 +26,7 @@ namespace csi
         class http_server;
 
         /// Represents a single connection from a client.
-        class http_connection : public connection, public boost::enable_shared_from_this<http_connection>
+        class http_connection : public connection, public std::enable_shared_from_this<http_connection>
         {
         public:
             /// Construct a connection with the given io_service.
@@ -51,17 +50,14 @@ namespace csi
             void handle_timer(const boost::system::error_code& e);
             void handle_shutdown(const boost::system::error_code& e);
             void handle_async_reply_done();
+            
+            inline uint32_t total_microseconds() { return ((uint32_t)(boost::posix_time::microsec_clock::universal_time() - _request_start).total_microseconds()); }
 
             boost::asio::ip::tcp::socket _socket;
             http_server*                 _server;
             boost::asio::deadline_timer  _connection_timeout_timer;
+            boost::posix_time::ptime     _request_start;
         };
     } // namespace server
 } // namespace csi
 
-inline std::string to_string(const boost::asio::ip::tcp::endpoint& ep)
-{
-    char buf[32];
-    sprintf(buf, ":%d", (int)ep.port());
-    return ep.address().to_string() + buf;
-}

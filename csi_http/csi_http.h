@@ -14,8 +14,9 @@
 #include <strstream>
 #include <chrono>
 #include <stdint.h>
-#include <boost/function.hpp>
 #include <iostream>
+#include <boost/function.hpp>
+#include <boost/asio.hpp>
 
 namespace csi
 {
@@ -111,4 +112,14 @@ namespace csi
 std::string to_string(csi::http::status_type s);
 const std::string& to_string(csi::http::method_t s);
 std::string uri_encode(const std::string& str);
+
+//bool url_decode(const std::string& in, std::string& out);
+
+// move to utils of something
+inline std::string to_string(const boost::asio::ip::tcp::endpoint& ep)
+{
+    char buf[32];
+    sprintf(buf, ":%d", (int)ep.port());
+    return ep.address().to_string() + buf;
+}
 

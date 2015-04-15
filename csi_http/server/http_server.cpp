@@ -52,18 +52,6 @@ namespace csi
             _acceptor.async_accept(_new_connection->socket(), boost::bind(&http_server::handle_accept, this, boost::asio::placeholders::error));
         }
 
-        /*
-        void http_server::run()
-        {
-            _io_service_pool.run();
-        }
-
-        void http_server::stop()
-        {
-            _io_service_pool.stop();
-        }
-        */
-
         void http_server::handle_accept(const boost::system::error_code& e)
         {
             if (!e)

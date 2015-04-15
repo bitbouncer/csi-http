@@ -8,21 +8,19 @@ SET(LIB_SRCS
 	client/http_client.cpp
 	server/connection.h
 	server/connection.cpp
-	server/file_request_handler.cpp
-	server/file_request_handler.h
 	server/header.h
 	server/reply.h
 	server/reply.cpp
 	server/request.h
     server/request.cpp
-	server/request_handler.h
 	server/server.h
-	server/server.cpp
 	server/http_server.h
 	server/http_server.cpp		
 	server/http_connection.h			
 	server/http_connection.cpp				
-	)
+	utils/uri_pattern.h
+    utils/uri_pattern.cpp
+    )
 	
 if (__CSI_HAS_OPENSSL__)
 	SET(LIB_SRCS 

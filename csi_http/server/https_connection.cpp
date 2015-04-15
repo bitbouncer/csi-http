@@ -2,6 +2,9 @@
 #include <vector>
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/expressions.hpp>
 #include "https_connection.h"
 #include "https_server.h"
 
@@ -37,15 +40,16 @@ namespace csi
 
         void https_connection::send_reply()
         {
-            //LOG_TRACE() << "ssl_session::send_reply";
+            BOOST_LOG_TRIVIAL(info) << "HTTPS REQUEST END " << request().request_id() << ", " << to_string(socket().remote_endpoint()) << ", " << to_string(request().method()) << " " << request().url() << " duration " << total_microseconds() << ", status : " << reply().status() << ", " << to_string(reply().status());
             _waiting_for_async_reply = false;
+            if (!keep_alive())
+                reply().add(header_t("Connection", "close"));
             boost::asio::async_write(_socket, _reply.to_buffers(), boost::bind(&https_connection::handle_write_complete, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
         }
 
         void https_connection::wait_for_async_reply()
         {
             _waiting_for_async_reply = true;
-            //LOG_TRACE() << "ssl_session::wait_for_async_reply";
             boost::posix_time::time_duration timeout(1, 0, 60, 0); // 5 sec for debugging
             _timer.expires_from_now(timeout);
             _timer.async_wait(boost::bind(&https_connection::handle_async_call, shared_from_this(), boost::asio::placeholders::error));
@@ -53,10 +57,6 @@ namespace csi
 
         void https_connection::notify_async_reply_done()
         {
-            //if (!_waiting_for_async_reply)
-            //        LOG_ERROR() << "ssl_session::notify_async_reply_done : NOT WAITING...";
-
-            //LOG_TRACE() << "ssl_session::notify_async_reply_done";
             boost::system::error_code ec;
             _timer.cancel(ec);
         }
@@ -108,7 +108,10 @@ namespace csi
 
                 if (request_complete())
                 {
-                    _server->handle_request(this);
+                    request().request_uuid(); // force request id -> uuid
+                    _request_start = boost::posix_time::microsec_clock::universal_time();
+                    BOOST_LOG_TRIVIAL(info) << "HTTPS REQUEST BEGIN " << request().request_id() << ", " << to_string(socket().remote_endpoint()) << ", " << to_string(request().method()) << " " << request().url();
+                    _server->handle_request(shared_from_this());
                     if (_waiting_for_async_reply)
                     {
                         boost::posix_time::time_duration timeout(1, 0, 5, 0); // wait very long since we cant be dead when async call returns
