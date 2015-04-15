@@ -8,6 +8,7 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 #include <csi_http/client/http_client.h>
+#include <csi_avro/utils.h>
 #include "../avro_defs/hello_world_request.h"
 #include "../avro_defs/hello_world_response.h"
 
@@ -43,7 +44,7 @@ int main(int argc, char **argv)
             }
             catch (std::exception& e)
             {
-                BOOST_LOG_TRIVIAL(error) << "csi::avro_json_decode<sample::HelloWorldResponse> " << e.what();
+                BOOST_LOG_TRIVIAL(error) << "csi::avro_json_decode<sample::HelloWorldResponse> " << e.what() << " content:" << to_string(result->rx_content());
             }
         }
         else

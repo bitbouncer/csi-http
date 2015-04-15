@@ -15,6 +15,7 @@
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/bind.hpp>
 #include <csi_http/server/https_server.h>
+#include <csi_http/server/https_connection.h>
 #include <csi_http/csi_http.h>
 #include <csi_avro/encoding.h>
 #include "../avro_defs/hello_world_request.h"
@@ -27,7 +28,7 @@ public:
     sample_service(boost::asio::io_service& ios) : _ios(ios) {}
     virtual ~sample_service() {}
 
-    void post(std::shared_ptr<sample::HelloWorldRequest> pd, csi::http::connection* context)
+    void post(std::shared_ptr<sample::HelloWorldRequest> pd, std::shared_ptr<csi::http::connection> context)
     {
         BOOST_LOG_TRIVIAL(info) << pd->message << ", sleeping  " << pd->delay << " ms";
         std::shared_ptr<timer> pt(new timer(_ios, boost::chrono::milliseconds(pd->delay)));
@@ -36,7 +37,7 @@ public:
     }
 
 private:
-    void _handle_post(const boost::system::error_code& ec, std::shared_ptr<timer> dummy, std::shared_ptr<sample::HelloWorldRequest> dummy2, csi::http::connection* context)
+    void _handle_post(const boost::system::error_code& ec, std::shared_ptr<timer> dummy, std::shared_ptr<sample::HelloWorldRequest> dummy2, std::shared_ptr<csi::http::connection> context)
     {
         BOOST_LOG_TRIVIAL(info) << "done and returning ok  ";
         sample::HelloWorldResponse resp;
@@ -49,14 +50,14 @@ private:
     boost::asio::io_service& _ios;
 };
 
-class sample_request_handler : public csi::http::request_handler
+class sample_request_handler
 {
 public:
     sample_request_handler(sample_service* ps) : _service(ps) {}
     ~sample_request_handler() {}
 
     /// Handle a request and produce a reply.
-    virtual void handle_request(const std::string& rel_url, csi::http::connection* context)
+    void handle_request(std::shared_ptr<csi::http::connection> context)
     {
         if (context->request().method() == csi::http::POST)
         {
@@ -80,17 +81,16 @@ public:
             context->reply().create(csi::http::bad_request);
         }
     }
-
     sample_service* _service;
 };
 
-void print_stat(csi::http::request_handler* handler)
+void print_stat(csi::http::https_server* srv)
 {
-    uint64_t last = handler->get_no_of_requests();
+    uint64_t last = srv->get_no_of_requests("/rest/avro_sample");
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(5000));
-        uint64_t stat = handler->get_no_of_requests();
+        uint64_t stat = srv->get_no_of_requests("/rest/avro_sample");
         BOOST_LOG_TRIVIAL(info) << (stat - last) / 5.0 << " RPC/s " << " connections = " << csi::http::connection::connection_count();
         last = stat;
     }
@@ -121,7 +121,7 @@ int main(int argc, char** argv)
     // initialize SSL
     boost::asio::ssl::context_base::method SSL_version = boost::asio::ssl::context_base::sslv23_server;
     // load certificate files
-    boost::shared_ptr<boost::asio::ssl::context> _ssl_context = boost::shared_ptr<boost::asio::ssl::context>(new boost::asio::ssl::context(SSL_version));
+    std::shared_ptr<boost::asio::ssl::context> _ssl_context = std::shared_ptr<boost::asio::ssl::context>(new boost::asio::ssl::context(SSL_version));
 
     _ssl_context->set_options(
         boost::asio::ssl::context::default_workarounds
@@ -140,9 +140,13 @@ int main(int argc, char** argv)
         sample_request_handler     my_sample_request_handler(&my_service);
         csi::http::https_server    s1(ios, my_address, port, *_ssl_context);
 
-        boost::thread stat_thread(boost::bind(print_stat, &my_sample_request_handler));
+        boost::thread stat_thread(boost::bind(print_stat, &s1));
 
-        s1.add_request_handler("/rest/avro_sample", &my_sample_request_handler);
+        s1.add_handler("/rest/avro_sample", [&my_sample_request_handler](const std::vector<std::string>&, std::shared_ptr<csi::http::connection> c)
+        {
+            my_sample_request_handler.handle_request(c);
+        });
+
         ios.run();
     }
     catch (std::exception& e)
