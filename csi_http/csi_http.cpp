@@ -36,11 +36,11 @@ std::string to_string(csi::http::status_type s)
     };
 };
 
-static std::string method_strings[csi::http::PURGE]
+static std::string method_strings[csi::http::PURGE+1]
 {
     "DELETE",
         "GET",
-        "HEAD"
+        "HEAD",
         "POST",
         "PUT",
         /* pathological */
