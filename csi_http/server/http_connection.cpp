@@ -54,7 +54,7 @@ namespace csi
 
         void http_connection::send_reply()
         {
-            BOOST_LOG_TRIVIAL(info) << "HTTP REQUEST END " << request().request_id() << ", " << to_string(socket().remote_endpoint()) << ", " << to_string(request().method()) << " " << request().url() << " duration " << total_microseconds() << ", status : " << reply().status() << ", " << to_string(reply().status());
+            BOOST_LOG_TRIVIAL(info) << request().request_id() << ", http request end, " << to_string(socket().remote_endpoint()) << ", " << to_string(request().method()) << ", " << request().url() << ", duration: " << total_microseconds() << ", status: " << reply().status() << ", " << to_string(reply().status());
             _waiting_for_async_reply = false;
             if (!keep_alive())
                 reply().add(header_t("Connection", "close"));
@@ -105,7 +105,7 @@ namespace csi
                 if (request_complete())
                 {
                     _request_start = boost::posix_time::microsec_clock::universal_time();
-                    BOOST_LOG_TRIVIAL(info) << "HTTP REQUEST BEGIN " << request().request_id() << ", " << to_string(socket().remote_endpoint()) << ", " << to_string(request().method()) << " " << request().url();
+                    BOOST_LOG_TRIVIAL(info) << request().request_id() << ", http request begin, " << to_string(socket().remote_endpoint()) << ", " << to_string(request().method()) << ", " << request().url();
                     _server->handle_request(shared_from_this());
                     if (_waiting_for_async_reply)
                     {
