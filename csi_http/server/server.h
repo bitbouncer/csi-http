@@ -70,7 +70,7 @@ namespace csi
                 std::vector<std::string> parts;
                 boost::split(parts, url, boost::is_any_of("/"));
 
-                for (std::vector<std::shared_ptr<handler_data>>::const_iterator i = _handlers2.begin(); i != _handlers2.end(); ++i)
+                for (typename std::vector<std::shared_ptr<handler_data>>::const_iterator i = _handlers2.begin(); i != _handlers2.end(); ++i)
                 {
                     if ((*i)->match(parts))
                     {
@@ -87,7 +87,7 @@ namespace csi
                 boost::split(parts, pattern, boost::is_any_of("/"));
 
                 uint64_t result = 0;
-                for (std::vector<std::shared_ptr<handler_data>>::const_iterator i = _handlers2.begin(); i != _handlers2.end(); ++i)
+                for (typename std::vector<std::shared_ptr<handler_data>>::const_iterator i = _handlers2.begin(); i != _handlers2.end(); ++i)
                 {
                     // now
                     if ((*i)->match(parts))
