@@ -7,7 +7,7 @@ set(EXT_LIBS csi-http csi-http-parser csi-avro avrocpp_s libcurl libeay32 ssleay
 endif()
 
 if(__LINUX__)
-set(EXT_LIBS csi-http csi-http-parser csi-avro avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_program_options boost_filesystem boost_regex boost_chrono curl cares ssl crypto rt pthread c)
+set(EXT_LIBS csi-http csi-http-parser csi-avro avrocpp_s boost_log_setup boost_log boost_date_time boost_timer boost_thread boost_system boost_program_options boost_filesystem boost_regex boost_chrono curl cares idn ldap ssl crypto rt pthread c)
 endif()
 
 if(__DARWIN__)
