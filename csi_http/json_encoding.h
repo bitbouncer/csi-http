@@ -62,8 +62,18 @@ namespace csi
     }
 
     template<class T>
+    bool json_spirit_decode(const avro::OutputStream& src, T& dst)
+    {
+        auto mis = avro::memoryInputStream(src);
+        return json_spirit_decode<T>(*mis, dst);
+    }
+
+
+    /*
+    template<class T>
     inline bool json_spirit_decode(std::auto_ptr<avro::InputStream> src, T& dst)
     {
         return json_spirit_decode<T>(*src, dst);
     }
+    */
 }; // namespace

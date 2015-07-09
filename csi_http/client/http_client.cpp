@@ -359,8 +359,7 @@ namespace csi
         // retrieve cert info
         //curl_easy_setopt(_curl, CURLOPT_CERTINFO, 1); 
 
-        /*for debugging */
-        if (request->_verbose)
+        if (request->_curl_verbose)
             curl_easy_setopt(request->_curl_easy, CURLOPT_VERBOSE, 1L);
 
         switch (request->_method)

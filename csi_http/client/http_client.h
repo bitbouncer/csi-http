@@ -18,6 +18,7 @@
 #include <csi_http/csi_http.h>
 #include <csi_http/spinlock.h>
 #include <csi_avro/encoding.h>
+#include <csi_avro/utils.h>
 
 #pragma once
 
@@ -36,7 +37,7 @@ namespace csi
             call_context(csi::http::method_t method, const std::string& uri, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout) :
                 _method(method),
                 _uri(uri),
-                _verbose(false),
+                _curl_verbose(false),
                 _timeoutX(timeout),
                 _http_result(csi::http::undefined),
                 _tx_headers(headers),
@@ -69,41 +70,26 @@ namespace csi
 
         public:
             static size_t connection_count() { csi::spinlock::scoped_lock xx(s_spinlock); return s_context_count; }
-            inline void curl_start(call_context::handle h)  { _curl_shared = h; }
-            inline void curl_stop()                         { _curl_shared.reset(); }
-            inline call_context::handle curl_handle()       { return _curl_shared; }
-            inline int64_t milliseconds() const             { std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(_end_ts - _start_ts); return duration.count(); }
-            inline int64_t microseconds() const             { std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(_end_ts - _start_ts); return duration.count(); }
-            avro::OutputStream& tx_content()                { return *_avro_tx_buffer.get(); }
-            inline size_t tx_content_length() const         { return _avro_tx_buffer->byteCount(); }
-            inline size_t rx_content_length() const         { return _avro_rx_buffer->byteCount(); }
-            inline size_t rx_content(char* buf, size_t capacity) const
-            {
-                auto x = avro::memoryInputStream(*_avro_rx_buffer.get());
-                avro::StreamReader reader(*x.get());
-                return csi::readBytes(&reader, (uint8_t*)buf, capacity);
-            }
-
-            inline size_t tx_content(char* buf, size_t capacity) const
-            {
-                auto x = avro::memoryInputStream(*_avro_tx_buffer.get());
-                avro::StreamReader reader(*x.get());
-                return csi::readBytes(&reader, (uint8_t*)buf, capacity);
-            }
-
-            inline const std::string& uri() const                      { return _uri; }
-            inline csi::http::status_type http_result() const          { return _http_result; }
-            inline bool transport_result() const                       { return _transport_ok; }
-            inline bool ok() const                                     { return _transport_ok && (_http_result >= 200) && (_http_result < 300); }
-            inline const avro::OutputStream& rx_buffer() const         { return *_avro_rx_buffer.get(); }
-            inline std::auto_ptr<avro::InputStream> rx_content() const { return avro::memoryInputStream(rx_buffer()); }
-
+            inline void curl_start(call_context::handle h)     { _curl_shared = h; }
+            inline void curl_stop()                            { _curl_shared.reset(); }
+            inline call_context::handle curl_handle()          { return _curl_shared; }
+            inline int64_t milliseconds() const                { std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(_end_ts - _start_ts); return duration.count(); }
+            inline int64_t microseconds() const                { std::chrono::microseconds duration = std::chrono::duration_cast<std::chrono::microseconds>(_end_ts - _start_ts); return duration.count(); }
+            const avro::OutputStream& rx_content() const       { return *_avro_rx_buffer.get(); }
+            const avro::OutputStream& tx_content() const       { return *_avro_tx_buffer.get(); }
+                  avro::OutputStream& tx_content()             { return *_avro_tx_buffer.get(); }
+            inline size_t tx_content_length() const            { return _avro_tx_buffer->byteCount(); }
+            inline size_t rx_content_length() const            { return _avro_rx_buffer->byteCount(); }
+            inline void set_verbose(bool state)                { _curl_verbose = state; }
+            inline const std::string& uri() const              { return _uri; }
+            inline csi::http::status_type http_result() const  { return _http_result; }
+            inline bool transport_result() const               { return _transport_ok; }
+            inline bool ok() const                             { return _transport_ok && (_http_result >= 200) && (_http_result < 300); }
         private:
             csi::http::method_t                   _method;
             std::string                           _uri;
             std::vector<std::string>              _tx_headers;
             std::vector<std::string>              _rx_headers;
-            bool                                  _verbose;// degug only
             std::chrono::steady_clock::time_point _start_ts;
             std::chrono::steady_clock::time_point _end_ts;
             std::chrono::milliseconds             _timeoutX;
@@ -126,6 +112,7 @@ namespace csi
             curl_slist*                           _curl_headerlist;
             bool                                  _curl_done;
             handle                                _curl_shared; // used to keep object alive when only curl knows about the context
+            bool                                  _curl_verbose;
 
             static csi::spinlock                  s_spinlock;
             static size_t                         s_context_count;
