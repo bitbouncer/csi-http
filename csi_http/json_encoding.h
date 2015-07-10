@@ -25,6 +25,9 @@ namespace csi
         std::string s = write(root_object); // options can be added  for debugging .. prettyprint
         avro::StreamWriter writer(dst);
         writer.writeBytes((const uint8_t*)s.data(), s.size());
+        // push back unused characters to the output stream again... really strange... 			
+        // otherwise content_length will be a multiple of 4096
+        writer.flush(); 
     }
 
     // naive implementation... 
@@ -67,13 +70,4 @@ namespace csi
         auto mis = avro::memoryInputStream(src);
         return json_spirit_decode<T>(*mis, dst);
     }
-
-
-    /*
-    template<class T>
-    inline bool json_spirit_decode(std::auto_ptr<avro::InputStream> src, T& dst)
-    {
-        return json_spirit_decode<T>(*src, dst);
-    }
-    */
 }; // namespace
