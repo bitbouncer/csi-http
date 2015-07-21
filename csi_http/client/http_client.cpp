@@ -295,7 +295,9 @@ namespace csi
 
     static size_t read_callback_avro_stream(void *ptr, size_t size, size_t nmemb, avro::StreamReader* stream)
     {
-        size_t sz = csi::readBytes(stream, (uint8_t*)ptr, size*nmemb);
+		size_t sz = size*nmemb;
+		stream->readBytes((uint8_t*)ptr, sz);
+		//size_t sz = csi::readBytes(stream, (uint8_t*)ptr, size*nmemb);
         return sz;
     }
 
