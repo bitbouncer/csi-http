@@ -1,8 +1,10 @@
-add_subdirectory(csi_http_client_async_sample)
-add_subdirectory(csi_http_server_sample)
 add_subdirectory(avro_http_client_async_sample)
 add_subdirectory(avro_http_client_sample)
 add_subdirectory(avro_http_client_load_sample)
 add_subdirectory(avro_http_server_sample)
 add_subdirectory(avro_https_server_sample)
 add_subdirectory(avro_https_client_sample)
+
+add_subdirectory(json_spirit_http_client_async_sample)
+add_subdirectory(json_spirit_http_server_sample)
+

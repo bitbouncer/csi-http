@@ -1,8 +1,8 @@
-project(csi_http_client_async_sample)
+project(json_spirit_http_client_async_sample)
 
 SET(SRCS
-csi_http_client_async_sample.cpp
+json_spirit_http_client_async_sample.cpp
 )
 
-add_executable(csi_http_client_async_sample ${SRCS})
-target_link_libraries(csi_http_client_async_sample json_spirit ${EXT_LIBS})
+add_executable(json_spirit_http_client_async_sample ${SRCS})
+target_link_libraries(json_spirit_http_client_async_sample json_spirit ${EXT_LIBS})

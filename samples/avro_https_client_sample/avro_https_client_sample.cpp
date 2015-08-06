@@ -8,6 +8,7 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 #include <csi_http/client/http_client.h>
+#include <csi_http/encoding/http_rest_avro_binary_encoding.h>
 #include "../avro_defs/hello_world_request.h"
 #include "../avro_defs/hello_world_response.h"
 
@@ -38,7 +39,7 @@ int main(int argc, char **argv)
             try
             {
                 sample::HelloWorldResponse response;
-                csi::avro_binary_decode(result->rx_content(), response);
+                csi::avro_raw_binary_decode(result->rx_content(), response);
                 BOOST_LOG_TRIVIAL(info) << response.message << " (" << result->rx_content_length() << " bytes) call time " << result->milliseconds() << " ms";
             }
             catch (std::exception& e)

@@ -36,7 +36,7 @@ std::string to_string(csi::http::status_type s)
     };
 };
 
-static std::string method_strings[csi::http::PURGE+1]
+static std::string method_strings[csi::http::PURGE + 1]
 {
     "DELETE",
         "GET",
@@ -75,3 +75,19 @@ const std::string& to_string(csi::http::method_t e)
 {
     return method_strings[e];
 }
+
+
+std::string debug_to_string(const avro::OutputStream& os)
+{
+    std::string res;
+    size_t sz = os.byteCount();
+    res.reserve(sz);
+    res.resize(sz);
+    auto x = avro::memoryInputStream(os);
+    avro::StreamReader reader(*x.get());
+    //size_t actual = csi::readBytes(&reader, (uint8_t*)&res[0], sz);
+    reader.readBytes((uint8_t*)&res[0], sz);
+    //assert(actual == sz);
+    return res;
+}
+;

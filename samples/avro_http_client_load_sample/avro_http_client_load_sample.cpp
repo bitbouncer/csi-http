@@ -8,6 +8,8 @@
 #include <boost/log/trivial.hpp>
 #include <boost/log/expressions.hpp>
 #include <csi_http/client/http_client.h>
+#include <csi_http/encoding/http_rest_avro_binary_encoding.h>
+#include <csi_http/encoding/http_rest_avro_json_encoding.h>
 #include "../avro_defs/hello_world_request.h"
 #include "../avro_defs/hello_world_response.h"
 

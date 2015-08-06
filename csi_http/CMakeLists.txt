@@ -3,7 +3,6 @@ SET(LIB_SRCS
 	csi_http.cpp
 	spinlock.cpp
 	spinlock.h
-	json_encoding.h
 	client/http_client.h
 	client/http_client.cpp
 	server/connection.h
@@ -20,6 +19,11 @@ SET(LIB_SRCS
 	server/http_connection.cpp				
 	utils/uri_pattern.h
     utils/uri_pattern.cpp
+	encoding/avro_json_spirit_encoding.h
+    encoding/avro_json_encoding.h
+    encoding/avro_raw_binary_encoding.h
+    encoding/http_rest_avro_json_encoding.h
+    encoding/http_rest_avro_binary_encoding.h
     )
 	
 if (__CSI_HAS_OPENSSL__)
