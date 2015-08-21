@@ -295,10 +295,22 @@ namespace csi
 
     static size_t read_callback_avro_stream(void *ptr, size_t size, size_t nmemb, avro::StreamReader* stream)
     {
-		size_t sz = size*nmemb;
-		stream->readBytes((uint8_t*)ptr, sz);
+		size_t max_remaining = size*nmemb;
+		//stream->readBytes((uint8_t*)ptr, sz);
 		//size_t sz = csi::readBytes(stream, (uint8_t*)ptr, size*nmemb);
-        return sz;
+		
+		//since stream->readBytes((uint8_t*)ptr, sz); throws an exception if we are reading pase end and there is no way of knowing how many bytes thera are - lets loop
+		uint8_t* cursor   = (uint8_t*) ptr;
+
+		while (max_remaining)
+		{
+			if (!stream->hasMore())
+				return cursor - (uint8_t*) ptr;
+			*cursor = stream->read();
+     		++cursor;
+			--max_remaining;
+		}
+		return cursor - (uint8_t*)ptr;
     }
 
     static size_t parse_headers(void *buffer, size_t size, size_t nmemb, std::vector<std::string>* v)
