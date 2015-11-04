@@ -11,19 +11,19 @@ include_directories (${AVROCPP_PATH}/api)
 
 ADD_LIBRARY(csi-avro STATIC 
         ${AVROCPP_PATH}/impl/Compiler.cc 
-		${AVROCPP_PATH}/impl/Node.cc
+        ${AVROCPP_PATH}/impl/Node.cc
         ${AVROCPP_PATH}/impl/NodeImpl.cc 
-		${AVROCPP_PATH}/impl/ResolverSchema.cc 
-		${AVROCPP_PATH}/impl/Schema.cc
+        ${AVROCPP_PATH}/impl/ResolverSchema.cc 
+        ${AVROCPP_PATH}/impl/Schema.cc
         ${AVROCPP_PATH}/impl/Types.cc 
-		${AVROCPP_PATH}/impl/ValidSchema.cc 
-		${AVROCPP_PATH}/impl/Zigzag.cc
+        ${AVROCPP_PATH}/impl/ValidSchema.cc 
+        ${AVROCPP_PATH}/impl/Zigzag.cc
         ${AVROCPP_PATH}/impl/BinaryEncoder.cc 
-		${AVROCPP_PATH}/impl/BinaryDecoder.cc
+        ${AVROCPP_PATH}/impl/BinaryDecoder.cc
         ${AVROCPP_PATH}/impl/Stream.cc 
-		${AVROCPP_PATH}/impl/FileStream.cc
+        ${AVROCPP_PATH}/impl/FileStream.cc
         ${AVROCPP_PATH}/impl/Generic.cc 
-		${AVROCPP_PATH}/impl/GenericDatum.cc
+        ${AVROCPP_PATH}/impl/GenericDatum.cc
         ${AVROCPP_PATH}/impl/DataFile.cc
         ${AVROCPP_PATH}/impl/parsing/Symbol.cc
         ${AVROCPP_PATH}/impl/parsing/ValidatingCodec.cc
@@ -32,8 +32,7 @@ ADD_LIBRARY(csi-avro STATIC
         ${AVROCPP_PATH}/impl/json/JsonIO.cc
         ${AVROCPP_PATH}/impl/json/JsonDom.cc
         ${AVROCPP_PATH}/impl/Resolver.cc 
-		${AVROCPP_PATH}/impl/Validator.cc
-        )
-		
+        ${AVROCPP_PATH}/impl/Validator.cc)
+
 add_subdirectory(csi_http)
 add_subdirectory(samples)
