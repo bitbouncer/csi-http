@@ -8,3 +8,5 @@ add_subdirectory(avro_https_client_sample)
 add_subdirectory(json_spirit_http_client_async_sample)
 add_subdirectory(json_spirit_http_server_sample)
 
+add_subdirectory(hello_google_sample)
+
