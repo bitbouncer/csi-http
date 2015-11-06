@@ -75,7 +75,7 @@ namespace csi
         }
         return 0;
     }
-    
+
     void http_client::socket_rx_cb(const boost::system::error_code& e, boost::asio::ip::tcp::socket * tcp_socket, call_context::handle context)
     {
         if (!e && !context->_curl_done)
@@ -98,7 +98,7 @@ namespace csi
     {
         if (!e)
         {
-            BOOST_LOG_TRIVIAL(trace) << "http_client::timer_cb:";
+            //BOOST_LOG_TRIVIAL(trace) << "http_client::timer_cb:";
             // CURL_SOCKET_TIMEOUT, 0 is corrent on timeouts http://curl.haxx.se/libcurl/c/curl_multi_socket_action.html
             CURLMcode rc = curl_multi_socket_action(_multi, CURL_SOCKET_TIMEOUT, 0, &_still_running);
             //check_multi_info(); //TBD kolla om denna ska vara här
@@ -156,7 +156,7 @@ namespace csi
 
             if (!tcp_socket)
             {
-                BOOST_LOG_TRIVIAL(trace) << "http_client::socket " << s << " is a c-ares socket, ignoring";
+                BOOST_LOG_TRIVIAL(trace) << "http_client::sock_cb socket " << s << " is a c-ares socket, ignoring";
                 return 0;
             }
         }
@@ -168,13 +168,17 @@ namespace csi
                                  //call_context* context = NULL;
                                  //curl_easy_getinfo(e, CURLINFO_PRIVATE, &context);
                                  long http_result = 0;
-                                 curl_easy_getinfo(e, CURLINFO_RESPONSE_CODE, &http_result);
-                                 context->_http_result = (csi::http::status_type) http_result;
+                                 CURLcode curl_res = curl_easy_getinfo(e, CURLINFO_RESPONSE_CODE, &http_result);
+                                 if (curl_res == CURLE_OK)
+                                     context->_http_result = (csi::http::status_type) http_result;
+                                 else
+                                     context->_http_result = (csi::http::status_type) 0;
+
                                  context->_end_ts = std::chrono::steady_clock::now();
                                  context->_curl_done = true;
                                  context->_transport_ok = (http_result > 0);
 
-                                 BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_REMOVE: " << s << " http:" << to_string(context->_method) << " " << context->uri() << " res = " << http_result << " " << context->milliseconds() << " ms";
+                                 BOOST_LOG_TRIVIAL(debug) << "http_client::sock_cb CURL_POLL_REMOVE: " << s << " http:" << to_string(context->_method) << " " << context->uri() << " res = " << http_result << " " << context->milliseconds() << " ms";
                                  call_context::handle h(context->curl_handle());
 
                                  if (context->_callback)
@@ -188,15 +192,15 @@ namespace csi
             break;
 
         case CURL_POLL_IN:
-            BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_IN: " << s;
+            BOOST_LOG_TRIVIAL(debug) << "http_client::sock_cb CURL_POLL_IN: " << s;
             tcp_socket->async_read_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_rx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             break;
         case CURL_POLL_OUT:
-            BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_OUT: " << s;
+            BOOST_LOG_TRIVIAL(debug) << "http_client::sock_cb CURL_POLL_OUT: " << s;
             tcp_socket->async_write_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_tx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             break;
         case CURL_POLL_INOUT:
-            BOOST_LOG_TRIVIAL(debug) << "http_client::CURL_POLL_INOUT: " << s;
+            BOOST_LOG_TRIVIAL(debug) << "http_client::sock_cb CURL_POLL_INOUT: " << s;
             tcp_socket->async_read_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_rx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             tcp_socket->async_write_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_tx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             break;
@@ -225,7 +229,7 @@ namespace csi
 
             if (ec)
             {
-                BOOST_LOG_TRIVIAL(error) << "http_client::Couldn't open socket [" << ec << "][" << ec.message() << "]";
+                BOOST_LOG_TRIVIAL(error) << "http_client::opensocket_cb couldn't open socket [" << ec << "][" << ec.message() << "]";
                 delete tcp_socket;
                 return CURL_SOCKET_BAD;
             }
@@ -236,9 +240,10 @@ namespace csi
                 csi::spinlock::scoped_lock xxx(_spinlock);
                 _socket_map.insert(std::pair<curl_socket_t, boost::asio::ip::tcp::socket *>(sockfd, tcp_socket));
             }
-            BOOST_LOG_TRIVIAL(debug) << "http_client::opened socket " << sockfd;
+            BOOST_LOG_TRIVIAL(debug) << "http_client::opensocket_cb opened socket " << sockfd;
             return sockfd;
         }
+        BOOST_LOG_TRIVIAL(error) << "http_client::opensocket_cb unsupported address family";
         return CURL_SOCKET_BAD;
     }
 
@@ -278,7 +283,7 @@ namespace csi
             {
                 // we seems to get back a CURL_POLL_INOUT on dead socket sometimes - only when timeouting connections 
                 // this will cause it to detected as a c-ares socket and exit (harmlesss)
-                curl_multi_assign(_multi, s, NULL); 
+                curl_multi_assign(_multi, s, NULL);
                 delete it->second;
                 _socket_map.erase(it);
             }
@@ -288,6 +293,7 @@ namespace csi
     static size_t write_callback_avro_stream(void *ptr, size_t size, size_t nmemb, avro::StreamWriter* stream)
     {
         size_t sz = size*nmemb;
+        BOOST_LOG_TRIVIAL(trace) << "http_client::write_callback_avro_stream sz: " << sz;
         stream->writeBytes((const uint8_t*)ptr, sz);
         stream->flush();
         return sz;
@@ -295,22 +301,24 @@ namespace csi
 
     static size_t read_callback_avro_stream(void *ptr, size_t size, size_t nmemb, avro::StreamReader* stream)
     {
-		size_t max_remaining = size*nmemb;
-		//stream->readBytes((uint8_t*)ptr, sz);
-		//size_t sz = csi::readBytes(stream, (uint8_t*)ptr, size*nmemb);
-		
-		//since stream->readBytes((uint8_t*)ptr, sz); throws an exception if we are reading pase end and there is no way of knowing how many bytes thera are - lets loop
-		uint8_t* cursor   = (uint8_t*) ptr;
+        size_t max_remaining = size*nmemb;
+        BOOST_LOG_TRIVIAL(trace) << "http_client::read_callback_avro_stream sz: " << max_remaining;
 
-		while (max_remaining)
-		{
-			if (!stream->hasMore())
-				return cursor - (uint8_t*) ptr;
-			*cursor = stream->read();
-     		++cursor;
-			--max_remaining;
-		}
-		return cursor - (uint8_t*)ptr;
+        //stream->readBytes((uint8_t*)ptr, sz);
+        //size_t sz = csi::readBytes(stream, (uint8_t*)ptr, size*nmemb);
+
+        //since stream->readBytes((uint8_t*)ptr, sz); throws an exception if we are reading pase end and there is no way of knowing how many bytes thera are - lets loop
+        uint8_t* cursor = (uint8_t*)ptr;
+
+        while (max_remaining)
+        {
+            if (!stream->hasMore())
+                return cursor - (uint8_t*)ptr;
+            *cursor = stream->read();
+            ++cursor;
+            --max_remaining;
+        }
+        return cursor - (uint8_t*)ptr;
     }
 
     static size_t parse_headers(void *buffer, size_t size, size_t nmemb, std::vector<std::string>* v)
@@ -333,8 +341,9 @@ namespace csi
         promise->set_value(res);
     }
 
-    csi::http_client::call_context::handle http_client::perform(call_context::handle request)
+    csi::http_client::call_context::handle http_client::perform(call_context::handle request, bool verbose)
     {
+        request->_curl_verbose = verbose;
         std::promise<bool> promise; // just a dummy value - we use the request handle anyway as result
         std::future<bool> future = promise.get_future();
         perform_async(request, boost::bind(wait_for_completion, _1, &promise));
@@ -428,6 +437,8 @@ namespace csi
         curl_easy_setopt(request->_curl_easy, CURLOPT_TIMEOUT_MS, request->_timeoutX.count());
         curl_easy_setopt(request->_curl_easy, CURLOPT_HEADERFUNCTION, parse_headers);
         curl_easy_setopt(request->_curl_easy, CURLOPT_WRITEHEADER, &request->_rx_headers);
+
+        curl_easy_setopt(request->_curl_easy, CURLOPT_FOLLOWLOCATION, 1L);
 
         //SSL OPTIONS
         // for now skip ca check

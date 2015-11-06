@@ -32,10 +32,10 @@ namespace csi
             typedef boost::function <void(std::shared_ptr<call_context>)> callback;
             typedef std::shared_ptr<call_context>                         handle;
 
-            call_context(csi::http::method_t method, const std::string& uri, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout) :
+            call_context(csi::http::method_t method, const std::string& uri, const std::vector<std::string>& headers, const std::chrono::milliseconds& timeout, bool verbose=false) :
                 _method(method),
                 _uri(uri),
-                _curl_verbose(false),
+                _curl_verbose(verbose),
                 _timeoutX(timeout),
                 _http_result(csi::http::undefined),
                 _tx_headers(headers),
@@ -121,7 +121,7 @@ namespace csi
         void close();
 
         void perform_async(call_context::handle, call_context::callback cb);
-        call_context::handle perform(call_context::handle);
+        call_context::handle perform(call_context::handle, bool verbose=false);
 
     protected:
         void _perform(call_context::handle);       // will be called in context of worker thread
