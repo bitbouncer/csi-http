@@ -3,6 +3,20 @@ INCLUDE(${CMAKE_SOURCE_DIR}/../csi-build-scripts/CMakeDependencies.txt)
 
 set(EXT_LIBS ${CSI_HTTP_LIBS})
 
+if(WIN32)
+add_definitions(-Dssize_t=int)
+ADD_LIBRARY(csi-snappy STATIC 
+        ${SNAPPY_PATH}/snappy.h 
+        ${SNAPPY_PATH}/snappy.cc
+        ${SNAPPY_PATH}/snappy-c.cc
+        ${SNAPPY_PATH}/snappy-c.h
+        ${SNAPPY_PATH}/snappy-internal.h
+        ${SNAPPY_PATH}/snappy-sinksource.cc        
+        ${SNAPPY_PATH}/snappy-sinksource.h
+        ${SNAPPY_PATH}/snappy-stubs-internal.cc
+        ${SNAPPY_PATH}/snappy-stubs-internal.h)        
+endif()
+
 #compile a http parser library from third party source
 ADD_LIBRARY(csi-http-parser STATIC ${HTTP_PARSER_PATH}/http_parser.h ${HTTP_PARSER_PATH}/http_parser.c)
 
