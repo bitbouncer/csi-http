@@ -57,8 +57,7 @@ namespace csi
     /* Update the event timer after curl_multi library calls */
     int http_client::multi_timer_cb(CURLM* multi, long timeout_ms)
     {
-        BOOST_LOG_TRIVIAL(trace) << "http_client::multi_timer_cb: timeout_ms " << timeout_ms;
-
+        BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << ", timeout_ms: " << timeout_ms;
         /* cancel running timer */
         _timer.cancel();
 
@@ -126,7 +125,7 @@ namespace csi
     // must not be called within curl callbacks - post a asio message instead
     void http_client::_poll_remove(call_context::handle h)
     {
-        BOOST_LOG_TRIVIAL(debug) << "http_client::_poll_remove: " << h->_curl_easy;
+        BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << ", handle: " << h->_curl_easy;
         curl_multi_remove_handle(_multi, h->_curl_easy);
     }
 
@@ -156,7 +155,7 @@ namespace csi
 
             if (!tcp_socket)
             {
-                BOOST_LOG_TRIVIAL(trace) << "http_client::sock_cb socket " << s << " is a c-ares socket, ignoring";
+                BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << ", socket: " << s << " is a c - ares socket, ignoring";
                 return 0;
             }
         }
@@ -178,7 +177,7 @@ namespace csi
                                  context->_curl_done = true;
                                  context->_transport_ok = (http_result > 0);
 
-                                 BOOST_LOG_TRIVIAL(debug) << "http_client::sock_cb CURL_POLL_REMOVE: " << s << " http:" << to_string(context->_method) << " " << context->uri() << " res = " << http_result << " " << context->milliseconds() << " ms";
+                                 BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << ", CURL_POLL_REMOVE, socket: " << s << ", http : " << to_string(context->_method) << " " << context->uri() << " res = " << http_result << " " << context->milliseconds() << " ms";
                                  call_context::handle h(context->curl_handle());
 
                                  if (context->_callback)
@@ -192,15 +191,15 @@ namespace csi
             break;
 
         case CURL_POLL_IN:
-            BOOST_LOG_TRIVIAL(debug) << "http_client::sock_cb CURL_POLL_IN: " << s;
+            BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << ", CURL_POLL_IN, socket: " << s;
             tcp_socket->async_read_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_rx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             break;
         case CURL_POLL_OUT:
-            BOOST_LOG_TRIVIAL(debug) << "http_client::sock_cb CURL_POLL_OUT: " << s;
+            BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << ", CURL_POLL_OUT, socket: " << s;
             tcp_socket->async_write_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_tx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             break;
         case CURL_POLL_INOUT:
-            BOOST_LOG_TRIVIAL(debug) << "http_client::sock_cb CURL_POLL_INOUT: " << s;
+            BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << ", CURL_POLL_INOUT, socket: " << s;
             tcp_socket->async_read_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_rx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             tcp_socket->async_write_some(boost::asio::null_buffers(), boost::bind(&http_client::socket_tx_cb, this, boost::asio::placeholders::error, tcp_socket, context->curl_handle()));
             break;
@@ -229,7 +228,7 @@ namespace csi
 
             if (ec)
             {
-                BOOST_LOG_TRIVIAL(error) << "http_client::opensocket_cb couldn't open socket [" << ec << "][" << ec.message() << "]";
+                BOOST_LOG_TRIVIAL(error) << this << ", " << BOOST_CURRENT_FUNCTION  << ", open failed, socket: " << ec << ", (" << ec.message() << ")";
                 delete tcp_socket;
                 return CURL_SOCKET_BAD;
             }
@@ -240,7 +239,7 @@ namespace csi
                 csi::spinlock::scoped_lock xxx(_spinlock);
                 _socket_map.insert(std::pair<curl_socket_t, boost::asio::ip::tcp::socket *>(sockfd, tcp_socket));
             }
-            BOOST_LOG_TRIVIAL(debug) << "http_client::opensocket_cb opened socket " << sockfd;
+            BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << " open ok, socket: " << sockfd;
             return sockfd;
         }
         BOOST_LOG_TRIVIAL(error) << "http_client::opensocket_cb unsupported address family";
@@ -256,8 +255,7 @@ namespace csi
     /* CURLOPT_CLOSESOCKETFUNCTION */
     int http_client::closesocket_cb(curl_socket_t item)
     {
-        BOOST_LOG_TRIVIAL(debug) << "http_client::closesocket_cb : " << item;
-
+        BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << ", socket: " << item;
         {
             csi::spinlock::scoped_lock xxx(_spinlock);
             std::map<curl_socket_t, boost::asio::ip::tcp::socket*>::iterator it = _socket_map.find(item);
@@ -275,7 +273,7 @@ namespace csi
     /* Called from asio a bit later than above */
     void http_client::_asio_closesocket_cb(curl_socket_t s)
     {
-        BOOST_LOG_TRIVIAL(debug) << "http_client::_asio_closesocket_cb : " << s;
+        BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << ", socket: " << s;
         {
             csi::spinlock::scoped_lock xxx(_spinlock);
             std::map<curl_socket_t, boost::asio::ip::tcp::socket*>::iterator it = _socket_map.find(s);
@@ -293,7 +291,7 @@ namespace csi
     static size_t write_callback_avro_stream(void *ptr, size_t size, size_t nmemb, avro::StreamWriter* stream)
     {
         size_t sz = size*nmemb;
-        BOOST_LOG_TRIVIAL(trace) << "http_client::write_callback_avro_stream sz: " << sz;
+        BOOST_LOG_TRIVIAL(trace) << BOOST_CURRENT_FUNCTION << ", size: " << sz;
         stream->writeBytes((const uint8_t*)ptr, sz);
         stream->flush();
         return sz;
@@ -302,7 +300,7 @@ namespace csi
     static size_t read_callback_avro_stream(void *ptr, size_t size, size_t nmemb, avro::StreamReader* stream)
     {
         size_t max_remaining = size*nmemb;
-        BOOST_LOG_TRIVIAL(trace) << "http_client::read_callback_avro_stream sz: " << max_remaining;
+        BOOST_LOG_TRIVIAL(trace) << BOOST_CURRENT_FUNCTION << ", size: " << max_remaining;
 
         //stream->readBytes((uint8_t*)ptr, sz);
         //size_t sz = csi::readBytes(stream, (uint8_t*)ptr, size*nmemb);
@@ -430,7 +428,7 @@ namespace csi
         static const char buf[] = "Expect:";
         /* initalize custom header list (stating that Expect: 100-continue is not wanted */
         request->_curl_headerlist = curl_slist_append(request->_curl_headerlist, buf);
-        request->_curl_headerlist = curl_slist_append(request->_curl_headerlist, "User-Agent:csi-http/0.0.1");
+        request->_curl_headerlist = curl_slist_append(request->_curl_headerlist, "User-Agent:csi-http/0.1");
         for (std::vector<std::string>::const_iterator i = request->_tx_headers.begin(); i != request->_tx_headers.end(); ++i)
             request->_curl_headerlist = curl_slist_append(request->_curl_headerlist, i->c_str());
         curl_easy_setopt(request->_curl_easy, CURLOPT_HTTPHEADER, request->_curl_headerlist);
@@ -446,7 +444,7 @@ namespace csi
         // retrieve cert info
         curl_easy_setopt(request->_curl_easy, CURLOPT_CERTINFO, 1);
         request->_start_ts = std::chrono::steady_clock::now();
-        BOOST_LOG_TRIVIAL(debug) << "http_client::perform >> http:" << to_string(request->_method) << " " << request->_uri;
+        BOOST_LOG_TRIVIAL(debug) << BOOST_CURRENT_FUNCTION << ", method: " << to_string(request->_method) << ", uri: " << request->_uri;
         CURLMcode rc = curl_multi_add_handle(_multi, request->_curl_easy);
     }
 };

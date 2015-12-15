@@ -33,10 +33,12 @@ namespace csi
             _server(server),
             _connection_timeout_timer(io_service)
         {
+            BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION;
         }
 
         http_connection::~http_connection()
         {
+            BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION;
             boost::system::error_code ignored_ec;
             _connection_timeout_timer.cancel(ignored_ec);
             _socket.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ignored_ec);
@@ -71,7 +73,7 @@ namespace csi
 
         void http_connection::notify_async_reply_done()
         {
-            BOOST_LOG_TRIVIAL(debug) << "http_connection::notify_async_reply_done";
+            BOOST_LOG_TRIVIAL(trace) << request().request_id() << ", " << BOOST_CURRENT_FUNCTION;
             _io_service.post(boost::bind(&http_connection::handle_async_reply_done, shared_from_this()));
         }
 

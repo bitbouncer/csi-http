@@ -57,6 +57,7 @@ namespace csi
 
         void https_connection::notify_async_reply_done()
         {
+            BOOST_LOG_TRIVIAL(info) << request().request_id() <<", HTTPS REQUEST END ";
             boost::system::error_code ec;
             _timer.cancel(ec);
         }
