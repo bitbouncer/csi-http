@@ -29,6 +29,7 @@ int main(int argc, char **argv)
             request.message = "nisse was here";
             handler.perform_async(
                 csi::create_avro_json_rest(
+                csi::http::POST,
                 "127.0.0.1:8090/rest/avro_sample",
                 request,
                 { "Content-Type:avro/json", "Accept:avro/json" },

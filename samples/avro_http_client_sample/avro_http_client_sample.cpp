@@ -35,7 +35,7 @@ int main(int argc, char **argv)
         sample::HelloWorldRequest request;
         request.message = "greeting to you!";
         request.delay = 0;
-        auto result = handler.perform(csi::create_avro_json_rest("127.0.0.1:8090/rest/avro_sample", request, { "Content-Type:avro/json", "Accept:avro/json" }, std::chrono::milliseconds(1000)));
+        auto result = handler.perform(csi::create_avro_json_rest(csi::http::POST, "127.0.0.1:8090/rest/avro_sample", request, { "Content-Type:avro/json", "Accept:avro/json" }, std::chrono::milliseconds(1000)));
         if (result->ok())
         {
             try
