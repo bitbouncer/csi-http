@@ -216,7 +216,7 @@ namespace csi
     /* CURLOPT_OPENSOCKETFUNCTION */
     curl_socket_t http_client::opensocket_cb(curlsocktype purpose, struct curl_sockaddr *address)
     {
-        /* restrict to ipv4 */
+        /* IPV4 */
         if (purpose == CURLSOCKTYPE_IPCXN && address->family == AF_INET)
         {
             /* create a tcp socket object */
@@ -242,6 +242,34 @@ namespace csi
             BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << " open ok, socket: " << sockfd;
             return sockfd;
         }
+
+        //// IPV6
+        //if (purpose == CURLSOCKTYPE_IPCXN && address->family == AF_INET6)
+        //{
+        //    /* create a tcp socket object */
+        //    boost::asio::ip::tcp::socket *tcp_socket = new boost::asio::ip::tcp::socket(_io_service);
+
+        //    /* open it and get the native handle*/
+        //    boost::system::error_code ec;
+        //    tcp_socket->open(boost::asio::ip::tcp::v6(), ec);
+
+        //    if (ec)
+        //    {
+        //        BOOST_LOG_TRIVIAL(error) << this << ", " << BOOST_CURRENT_FUNCTION << ", open failed, socket: " << ec << ", (" << ec.message() << ")";
+        //        delete tcp_socket;
+        //        return CURL_SOCKET_BAD;
+        //    }
+
+        //    curl_socket_t sockfd = tcp_socket->native_handle();
+        //    /* save it for monitoring */
+        //    {
+        //        csi::spinlock::scoped_lock xxx(_spinlock);
+        //        _socket_map.insert(std::pair<curl_socket_t, boost::asio::ip::tcp::socket *>(sockfd, tcp_socket));
+        //    }
+        //    BOOST_LOG_TRIVIAL(trace) << this << ", " << BOOST_CURRENT_FUNCTION << " open ok, socket: " << sockfd;
+        //    return sockfd;
+        //}
+
         BOOST_LOG_TRIVIAL(error) << "http_client::opensocket_cb unsupported address family";
         return CURL_SOCKET_BAD;
     }
@@ -437,6 +465,8 @@ namespace csi
         curl_easy_setopt(request->_curl_easy, CURLOPT_WRITEHEADER, &request->_rx_headers);
 
         curl_easy_setopt(request->_curl_easy, CURLOPT_FOLLOWLOCATION, 1L);
+
+        curl_easy_setopt(request->_curl_easy, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
         //SSL OPTIONS
         // for now skip ca check
