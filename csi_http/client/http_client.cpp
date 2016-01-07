@@ -436,7 +436,7 @@ namespace csi
         // if this is a resend we have to clear this before using it again
         if (request->_curl_headerlist)
         {
-            assert(false); // is this really nessessary??
+            //assert(false); // is this really nessessary??
             curl_slist_free_all(request->_curl_headerlist);
             request->_curl_headerlist = NULL;
         }
