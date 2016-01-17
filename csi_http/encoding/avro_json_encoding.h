@@ -26,5 +26,16 @@ namespace csi
         avro::decode(*e, dst);
         return dst;
     }
+
+    template<class T>
+    T& avro_json_decodeEx(const avro::OutputStream& src, T& dst)
+    {
+        auto mis = avro::memoryInputStream(src);
+        avro::DecoderPtr e = avro::jsonDecoderEx(*T::valid_schema());
+        e->init(*mis);
+        avro::decode(*e, dst);
+        return dst;
+    }
+
 }; // csi
 

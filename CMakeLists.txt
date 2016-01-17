@@ -42,6 +42,7 @@ ADD_LIBRARY(csi-avro STATIC
         ${AVROCPP_PATH}/impl/parsing/Symbol.cc
         ${AVROCPP_PATH}/impl/parsing/ValidatingCodec.cc
         ${AVROCPP_PATH}/impl/parsing/JsonCodec.cc
+		${AVROCPP_PATH}/impl/parsing/JsonCodecEx.cc
         ${AVROCPP_PATH}/impl/parsing/ResolvingDecoder.cc
         ${AVROCPP_PATH}/impl/json/JsonIO.cc
         ${AVROCPP_PATH}/impl/json/JsonDom.cc
